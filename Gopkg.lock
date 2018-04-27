@@ -53,13 +53,13 @@
     "html/atom",
     "html/charset"
   ]
-  revision = "d41e8174641f662c5a2d1c7a5f9e828788eb8706"
+  revision = "5f9ae10d9af5b1c89ae6904293b14b064d4ada23"
 
 [[projects]]
   branch = "master"
   name = "golang.org/x/sys"
   packages = ["unix"]
-  revision = "3ccc7e5779793fd54564baf60c51bf017955e0ba"
+  revision = "bb9c189858d91f42db229b04d45a4c3d23a7662a"
 
 [[projects]]
   name = "golang.org/x/text"
@@ -94,6 +94,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "60a7e0c8a6149d21181cf7946693be01d2883bec16869eaee60fa990ae31898c"
+  inputs-digest = "07a827d61fe65a74d1b73774f44e1f4c58b25b640e73fff288370225da90b0e5"
   solver-name = "gps-cdcl"
   solver-version = 1
