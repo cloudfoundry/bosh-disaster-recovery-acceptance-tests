@@ -6,7 +6,7 @@ type IntegrationConfig struct {
 	Host           string `json:"bosh_host"`
 	SSHUsername    string `json:"bosh_ssh_username"`
 	SSHPrivateKey  string `json:"bosh_ssh_private_key"`
-	TimeoutMinutes int    `json:"timeout_in_minutes"`
+	TimeoutMinutes string `json:"timeout_in_minutes"`
 }
 
 func (i IntegrationConfig) SSHPrivateKeyPath() (string, error) {

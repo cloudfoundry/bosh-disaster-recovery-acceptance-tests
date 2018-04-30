@@ -1,10 +1,16 @@
 #!/usr/bin/env bash
 
-set -eu
+set -e
+set -u
 
-export GOPATH=$PWD
-export PATH=$PATH:$GOPATH/bin
+pushd $BBR_RELEASE_PATH
+  tar xvf *.tar
+  export BBR_BINARY_PATH="$PWD/releases/bbr"
+popd
 
-pushd src/github.com/cloudfoundry-incubator/bosh-disaster-recovery-acceptance-tests
+export GOPATH="$PWD"
+export PATH="$PATH:$GOPATH/bin"
+
+pushd $B_DRATS_PATH
   scripts/_run_acceptance_tests.sh
 popd

@@ -8,6 +8,13 @@ image_resource:
 inputs:
 - name: bosh-disaster-recovery-acceptance-tests
   path: src/github.com/cloudfoundry-incubator/bosh-disaster-recovery-acceptance-tests
+- name: bbr-binary-release
+- name: b-drats-integration-config
+
+params:
+  B_DRATS_PATH: src/github.com/cloudfoundry-incubator/bosh-disaster-recovery-acceptance-tests
+  BBR_RELEASE_PATH: bbr-binary-release
+  INTEGRATION_CONFIG_PATH: # JSON file in b-drats-integration-config resource
 
 run:
   path: src/github.com/cloudfoundry-incubator/bosh-disaster-recovery-acceptance-tests/ci/bdrats/task.sh

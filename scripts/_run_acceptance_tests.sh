@@ -2,4 +2,6 @@
 
 set -eu
 
-ginkgo -v --trace acceptance
+SCRIPTS_DIR="$(dirname $0)"
+
+ginkgo -v --trace "$SCRIPTS_DIR/../acceptance"
