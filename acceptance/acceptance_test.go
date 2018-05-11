@@ -11,7 +11,6 @@ var _ = Describe("backing up bosh", func() {
 	config := loadConfig()
 
 	testCases := []runner.TestCase{
-		testcases.ToyTestcase{},
 		testcases.DeploymentTestcase{},
 	}
 
