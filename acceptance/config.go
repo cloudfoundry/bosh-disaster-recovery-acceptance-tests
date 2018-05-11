@@ -3,19 +3,30 @@ package acceptance
 import "io/ioutil"
 
 type IntegrationConfig struct {
-	Host           string `json:"bosh_host"`
-	SSHUsername    string `json:"bosh_ssh_username"`
-	SSHPrivateKey  string `json:"bosh_ssh_private_key"`
-	TimeoutMinutes string `json:"timeout_in_minutes"`
+	Host             string `json:"bosh_host"`
+	SSHUsername      string `json:"bosh_ssh_username"`
+	SSHPrivateKey    string `json:"bosh_ssh_private_key"`
+	TimeoutMinutes   string `json:"timeout_in_minutes"`
+	BOSHClient       string `json:"bosh_client"`
+	BOSHClientSecret string `json:"bosh_client_secret"`
+	BOSHCACert       string `json:"bosh_ca_cert"`
 }
 
 func (i IntegrationConfig) SSHPrivateKeyPath() (string, error) {
+	return i.writeSecretToFile(i.SSHPrivateKey)
+}
+
+func (i IntegrationConfig) CACertPath() (string, error) {
+	return i.writeSecretToFile(i.BOSHCACert)
+}
+
+func (i IntegrationConfig) writeSecretToFile(contents string) (string, error) {
 	file, err := ioutil.TempFile("", "b-drats")
 	if err != nil {
 		return "", err
 	}
 
-	err = ioutil.WriteFile(file.Name(), []byte(i.SSHPrivateKey), 0400)
+	err = ioutil.WriteFile(file.Name(), []byte(contents), 0400)
 	if err != nil {
 		return "", err
 	}

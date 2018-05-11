@@ -8,10 +8,12 @@ import (
 )
 
 var _ = Describe("backing up bosh", func() {
+	config := loadConfig()
+
 	testCases := []runner.TestCase{
 		testcases.ToyTestcase{},
+		testcases.DeploymentTestcase{},
 	}
-	config := loadConfig()
 
 	SetDefaultEventuallyTimeout(config.Timeout)
 	runner.RunBoshDisasterRecoveryAcceptanceTests(config, testCases)
