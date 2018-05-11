@@ -1,0 +1,31 @@
+---
+name: sdk-test
+
+releases:
+- name: "backup-and-restore-sdk"
+  version: "1.6.0"
+  url: "https://bosh.io/d/github.com/cloudfoundry-incubator/backup-and-restore-sdk-release?v=1.6.0"
+  sha1: "4e84e1e70e5a6e7a473c4ded5f5e7ae4a3ad65e5"
+
+stemcells:
+- alias: default
+  os: ubuntu-trusty
+  version: latest
+
+update:
+  canaries: 1
+  max_in_flight: 10
+  canary_watch_time: 1000-30000
+  update_watch_time: 1000-30000
+
+instance_groups:
+- name: database-backuper
+  stemcell: default
+  vm_type: default
+  instances: 1
+  networks:
+  - {name: default}
+  azs: [z1]
+  jobs:
+  - name: database-backup-restorer
+    release: backup-and-restore-sdk
