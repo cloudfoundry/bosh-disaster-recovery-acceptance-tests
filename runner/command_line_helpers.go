@@ -32,7 +32,7 @@ func runCommandWithStream(commandDescription string, stdout, stderr io.Writer, c
 
 func RunBoshCommandSuccessfullyWithFailureMessage(commandDescription string, config Config, args ...string) *gexec.Session {
 	return RunCommandSuccessfullyWithFailureMessage(commandDescription,
-		fmt.Sprintf("bosh "+
+		fmt.Sprintf("bosh-cli "+
 			"--environment=%s "+
 			"--client=%s "+
 			"--client-secret=%s "+
