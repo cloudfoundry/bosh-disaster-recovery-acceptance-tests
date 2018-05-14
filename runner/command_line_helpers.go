@@ -7,22 +7,23 @@ import (
 
 	"fmt"
 
+	. "github.com/ginkgo"
 	. "github.com/onsi/gomega"
 	"github.com/onsi/gomega/gexec"
 )
 
-func RunBoshCommandSuccessfullyWithFailureMessage(description string, writer io.Writer, config Config, args ...string) *gexec.Session {
-	return RunCommandSuccessfullyWithFailureMessage(description, writer, getBoshBaseCommand(config), args...)
+func RunBoshCommand(description string, config Config, args ...string) *gexec.Session {
+	return runCommandWithStream(description, GinkgoWriter, getBoshBaseCommand(config), args...)
+}
+
+func RunBoshCommandSuccessfullyWithFailureMessage(description string, config Config, args ...string) *gexec.Session {
+	return RunCommandSuccessfullyWithFailureMessage(description, GinkgoWriter, getBoshBaseCommand(config), args...)
 }
 
 func RunCommandSuccessfullyWithFailureMessage(description string, writer io.Writer, cmd string, args ...string) *gexec.Session {
 	session := runCommandWithStream(description, writer, cmd, args...)
 	Expect(session).To(gexec.Exit(0), "Command errored: "+description)
 	return session
-}
-
-func RunBoshCommand(description string, writer io.Writer, config Config, args ...string) *gexec.Session {
-	return runCommandWithStream(description, writer, getBoshBaseCommand(config), args...)
 }
 
 func runCommandWithStream(description string, writer io.Writer, cmd string, args ...string) *gexec.Session {

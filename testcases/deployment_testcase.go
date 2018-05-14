@@ -5,7 +5,6 @@ import (
 	. "github.com/cloudfoundry-incubator/bosh-disaster-recovery-acceptance-tests/runner"
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
-	"os"
 )
 
 type DeploymentTestcase struct{}
@@ -18,7 +17,6 @@ func (t DeploymentTestcase) BeforeBackup(config Config) {
 	By("deploying sdk deployment ", func() {
 		RunBoshCommandSuccessfullyWithFailureMessage(
 			"bosh deploy sdk",
-			os.Stdout,
 			config,
 			"-n",
 			"-d",
@@ -32,7 +30,6 @@ func (t DeploymentTestcase) BeforeBackup(config Config) {
 func (t DeploymentTestcase) AfterBackup(config Config) {
 	By("deleting sdk deployment ", func() {
 		RunBoshCommandSuccessfullyWithFailureMessage("bosh delete sdk deployment",
-			os.Stdout,
 			config,
 			"-n",
 			"-d",
@@ -45,7 +42,6 @@ func (t DeploymentTestcase) AfterBackup(config Config) {
 func (t DeploymentTestcase) AfterRestore(config Config) {
 	By("doing cck to bring back instances", func() {
 		RunBoshCommandSuccessfullyWithFailureMessage("bosh cck sdk deployment",
-			os.Stdout,
 			config,
 			"-n",
 			"-d",
@@ -57,7 +53,6 @@ func (t DeploymentTestcase) AfterRestore(config Config) {
 
 	By("validate deployment instances are back", func() {
 		session := RunBoshCommandSuccessfullyWithFailureMessage("bosh get sdk instances",
-			os.Stdout,
 			config,
 			"-n",
 			"-d",
@@ -72,7 +67,6 @@ func (t DeploymentTestcase) AfterRestore(config Config) {
 func (t DeploymentTestcase) Cleanup(config Config) {
 	By("deleting sdk deployment ", func() {
 		RunBoshCommandSuccessfullyWithFailureMessage("bosh delete sdk deployment",
-			os.Stdout,
 			config,
 			"-n",
 			"-d",

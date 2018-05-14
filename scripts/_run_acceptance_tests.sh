@@ -4,4 +4,4 @@ set -eu
 
 SCRIPTS_DIR="$(dirname $0)"
 
-ginkgo --trace "$SCRIPTS_DIR/../acceptance"
+ginkgo -v --trace "$SCRIPTS_DIR/../acceptance"

@@ -60,7 +60,7 @@ func RunBoshDisasterRecoveryAcceptanceTests(config Config, testCases []TestCase)
 
 		By("waiting for bosh director api to be available", func() {
 			Eventually(func() int {
-				return RunBoshCommand("bosh releases", GinkgoWriter, config, "releases").ExitCode()
+				return RunBoshCommand("bosh releases", config, "releases").ExitCode()
 			}, "60s", "1s").Should(BeZero())
 		})
 
