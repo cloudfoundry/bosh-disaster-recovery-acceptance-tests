@@ -31,15 +31,21 @@ func runCommandWithStream(commandDescription string, stdout, stderr io.Writer, c
 }
 
 func RunBoshCommandSuccessfullyWithFailureMessage(commandDescription string, config Config, args ...string) *gexec.Session {
-	return RunCommandSuccessfullyWithFailureMessage(commandDescription,
-		fmt.Sprintf("bosh-cli "+
-			"--environment=%s "+
-			"--client=%s "+
-			"--client-secret=%s "+
-			"--ca-cert=%s ",
-			config.BOSH.Host,
-			config.BOSH.Client,
-			config.BOSH.ClientSecret,
-			config.BOSH.CACertPath,
-		), args...)
+	return RunCommandSuccessfullyWithFailureMessage(commandDescription, getBoshBaseCommand(config), args...)
+}
+
+func getBoshBaseCommand(config Config) string {
+	return fmt.Sprintf("bosh-cli "+
+		"--environment=%s "+
+		"--client=%s "+
+		"--client-secret=%s "+
+		"--ca-cert=%s ",
+		config.BOSH.Host,
+		config.BOSH.Client,
+		config.BOSH.ClientSecret,
+		config.BOSH.CACertPath)
+}
+
+func RunBoshCommand(commandDescription string, config Config, args ...string) *gexec.Session {
+	return runCommandWithStream(commandDescription, GinkgoWriter, GinkgoWriter, getBoshBaseCommand(config), args...)
 }

@@ -54,7 +54,12 @@ func RunBoshDisasterRecoveryAcceptanceTests(config Config, testCases []TestCase)
 					config.BOSH.Host,
 				),
 			)
+		})
 
+		By("waiting for bosh director api to be available", func() {
+			Eventually(func() int {
+				return RunBoshCommand("bosh releases", config, "releases").ExitCode()
+			}, "60s", "1s").Should(BeZero())
 		})
 
 		By("running the after restore step", func() {
