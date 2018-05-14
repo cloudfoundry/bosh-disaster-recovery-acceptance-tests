@@ -7,7 +7,7 @@ import (
 
 	"fmt"
 
-	. "github.com/ginkgo"
+	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
 	"github.com/onsi/gomega/gexec"
 )
