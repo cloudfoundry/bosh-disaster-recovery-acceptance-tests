@@ -27,6 +27,7 @@ func runCommandWithStream(commandDescription string, stdout, stderr io.Writer, c
 
 	Expect(err).ToNot(HaveOccurred())
 	Eventually(session).Should(gexec.Exit(), "Command timed out: "+commandDescription)
+	fmt.Fprintln(GinkgoWriter, "")
 	return session
 }
 
