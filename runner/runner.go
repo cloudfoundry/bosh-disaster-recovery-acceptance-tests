@@ -21,6 +21,7 @@ func RunBoshDisasterRecoveryAcceptanceTests(config Config, testCases []TestCase)
 		By("backing up", func() {
 			RunCommandSuccessfullyWithFailureMessage(
 				"bbr director backup",
+				os.Stdout,
 				fmt.Sprintf(
 					"%s director --host %s --username %s --private-key-path %s backup --artifact-path %s",
 					config.BBRBinaryPath,
@@ -42,6 +43,7 @@ func RunBoshDisasterRecoveryAcceptanceTests(config Config, testCases []TestCase)
 		By("restoring", func() {
 			RunCommandSuccessfullyWithFailureMessage(
 				"bbr director restore",
+				os.Stdout,
 				fmt.Sprintf(
 					"%s director --host %s --username %s --private-key-path %s "+
 						"restore --artifact-path %s/$(ls %s | grep %s | head -n 1)",
@@ -58,7 +60,7 @@ func RunBoshDisasterRecoveryAcceptanceTests(config Config, testCases []TestCase)
 
 		By("waiting for bosh director api to be available", func() {
 			Eventually(func() int {
-				return RunBoshCommand("bosh releases", config, "releases").ExitCode()
+				return RunBoshCommand("bosh releases", GinkgoWriter, config, "releases").ExitCode()
 			}, "60s", "1s").Should(BeZero())
 		})
 
@@ -74,6 +76,7 @@ func RunBoshDisasterRecoveryAcceptanceTests(config Config, testCases []TestCase)
 		By("bbr director backup-cleanup", func() {
 			RunCommandSuccessfullyWithFailureMessage(
 				"bbr director backup-cleanup",
+				os.Stdout,
 				fmt.Sprintf(
 					"%s director --host %s --username %s --private-key-path %s backup-cleanup",
 					config.BBRBinaryPath,
