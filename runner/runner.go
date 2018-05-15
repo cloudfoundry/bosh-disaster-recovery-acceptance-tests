@@ -10,6 +10,11 @@ import (
 )
 
 func RunBoshDisasterRecoveryAcceptanceTests(config Config, testCases []TestCase) {
+	fmt.Println("Running testcases: ")
+	for _, t := range testCases {
+		fmt.Println(t.Name())
+	}
+
 	It("backs up and restores bosh", func() {
 		By("running the before backup step", func() {
 			for _, testCase := range testCases {
