@@ -17,4 +17,4 @@ params:
   INTEGRATION_CONFIG_PATH: # JSON file in b-drats-integration-config resource
 
 run:
-  path: src/github.com/cloudfoundry-incubator/bosh-disaster-recovery-acceptance-tests/ci/bdrats/task.sh
+  path: src/github.com/cloudfoundry-incubator/bosh-disaster-recovery-acceptance-tests/ci/run-b-drats/task.sh
