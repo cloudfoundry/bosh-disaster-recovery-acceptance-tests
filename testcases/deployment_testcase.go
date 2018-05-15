@@ -10,7 +10,7 @@ import (
 type DeploymentTestcase struct{}
 
 func (t DeploymentTestcase) Name() string {
-	return "deployment-testcase"
+	return "deployment_testcase"
 }
 
 func (t DeploymentTestcase) BeforeBackup(config Config) {

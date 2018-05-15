@@ -20,7 +20,7 @@ func TestAcceptance(t *testing.T) {
 	RunSpecs(t, "Acceptance Suite")
 }
 
-func loadConfig() runner.Config {
+func loadConfig() (runner.Config, runner.TestCaseFilter) {
 	artifactDirPath, err := ioutil.TempDir("", "b-drats")
 	if err != nil {
 		panic(err)
@@ -42,7 +42,13 @@ func loadConfig() runner.Config {
 		panic(err)
 	}
 
-	return config
+	filter := runner.IntegrationConfigTestCaseFilter{}
+	err = json.Unmarshal(rawConfig, &filter)
+	if err != nil {
+		panic(fmt.Sprint("Could not unmarshal Filter"))
+	}
+
+	return config, filter
 }
 
 func mustHaveEnv(keyname string) string {
