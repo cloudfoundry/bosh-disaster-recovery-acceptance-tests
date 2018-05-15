@@ -33,7 +33,8 @@ Please refer to our b-drats [pipeline definition](https://github.com/cloudfoundr
       "bosh_client": "bosh-client-name",
       "bosh_client_secret": "bosh-client-secret",
       "bosh_ca_cert": "bosh-ca-cert",
-      "timeout": "eventually-timeout-in-minutes"
+      "timeout_in_minutes": "eventually-timeout-in-minutes",
+      "include_deployment_testcase": true
     }
     ```
 1. Export `INTEGRATION_CONFIG_PATH` to be path to `integration-config.json` file you just created.
