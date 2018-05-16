@@ -10,26 +10,52 @@ var _ = Describe("TestCaseFilter", func() {
 	Describe("IntegrationConfigTestCaseFilter", func() {
 		var filter runner.IntegrationConfigTestCaseFilter
 
-		JustBeforeEach(func() {
+		BeforeEach(func() {
 			filter = runner.IntegrationConfigTestCaseFilter(map[string]interface{}{
-				"include_one":  true,
-				"include_two":  false,
-				"include_four": "some value",
-				"include_five": true,
+				"include_one":   true,
+				"include_two":   false,
+				"include_three": true,
 			})
 		})
 
 		It("only runs tests that are included in the config", func() {
-			Expect(filter.Filter(testCases("one", "two", "three", "four"))).To(ConsistOf(
-				testCase("one"),
-			))
+			filteredTestCases, err := filter.Filter(testCases("one", "two", "three"))
+
+			Expect(err).NotTo(HaveOccurred())
+			Expect(filteredTestCases).To(ConsistOf(testCases("one", "three")))
+		})
+
+		Context("when not flag is specified for a testcase", func() {
+			It("defaults to false", func() {
+				filteredTestCases, err := filter.Filter(testCases("one", "two", "four"))
+
+				Expect(err).NotTo(HaveOccurred())
+				Expect(filteredTestCases).To(ConsistOf(testCases("one")))
+			})
 		})
 
 		Context("when no test case matches", func() {
-			It("panics", func() {
-				Expect(func() {
-					filter.Filter(testCases("six"))
-				}).To(Panic())
+			It("returns an error", func() {
+				filteredTestCases, err := filter.Filter(testCases("six"))
+
+				Expect(filteredTestCases).To(BeNil())
+				Expect(err).To(MatchError("unable to find any test case included by the config"))
+			})
+		})
+
+		Context("when an include flag has a non-boolean value", func() {
+			BeforeEach(func() {
+				filter = runner.IntegrationConfigTestCaseFilter(map[string]interface{}{
+					"include_one": true,
+					"include_two": "not a boolean",
+				})
+			})
+
+			It("returns an error", func() {
+				filteredTestCases, err := filter.Filter(testCases("one", "two"))
+
+				Expect(filteredTestCases).To(BeNil())
+				Expect(err).To(MatchError("'include_two' should be a boolean"))
 			})
 		})
 	})
