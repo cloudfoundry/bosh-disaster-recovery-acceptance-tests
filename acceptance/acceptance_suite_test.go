@@ -42,8 +42,7 @@ func loadConfig() (runner.Config, runner.TestCaseFilter) {
 		panic(err)
 	}
 
-	filter := runner.IntegrationConfigTestCaseFilter{}
-	err = json.Unmarshal(rawConfig, &filter)
+	filter, err := runner.NewIntegrationConfigTestCaseFilter(rawConfig)
 	if err != nil {
 		panic(fmt.Sprint("Could not unmarshal Filter"))
 	}

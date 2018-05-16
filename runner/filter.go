@@ -1,6 +1,7 @@
 package runner
 
 import (
+	"encoding/json"
 	"fmt"
 )
 
@@ -9,6 +10,12 @@ type TestCaseFilter interface {
 }
 
 type IntegrationConfigTestCaseFilter map[string]interface{}
+
+func NewIntegrationConfigTestCaseFilter(rawConfig []byte) (IntegrationConfigTestCaseFilter, error) {
+	filter := IntegrationConfigTestCaseFilter{}
+	err := json.Unmarshal(rawConfig, &filter)
+	return filter, err
+}
 
 func (f IntegrationConfigTestCaseFilter) Filter(testCases []TestCase) ([]TestCase, error) {
 	var filteredTestCases []TestCase
