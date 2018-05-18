@@ -21,10 +21,10 @@ update:
 instance_groups:
 - name: database-backuper
   stemcell: default
-  vm_type: default
+  vm_type: ((vm_type))
   instances: 1
   networks:
-  - {name: default}
+  - {name: ((network_name))}
   azs: [z1]
   jobs:
   - name: database-backup-restorer

@@ -3,13 +3,15 @@ package acceptance
 import "io/ioutil"
 
 type IntegrationConfig struct {
-	Host             string `json:"bosh_host"`
-	SSHUsername      string `json:"bosh_ssh_username"`
-	SSHPrivateKey    string `json:"bosh_ssh_private_key"`
-	TimeoutMinutes   int64  `json:"timeout_in_minutes"`
-	BOSHClient       string `json:"bosh_client"`
-	BOSHClientSecret string `json:"bosh_client_secret"`
-	BOSHCACert       string `json:"bosh_ca_cert"`
+	Host              string `json:"bosh_host"`
+	SSHUsername       string `json:"bosh_ssh_username"`
+	SSHPrivateKey     string `json:"bosh_ssh_private_key"`
+	TimeoutMinutes    int64  `json:"timeout_in_minutes"`
+	BOSHClient        string `json:"bosh_client"`
+	BOSHClientSecret  string `json:"bosh_client_secret"`
+	BOSHCACert        string `json:"bosh_ca_cert"`
+	DeploymentVMType  string `json:"deployment_vm_type"`
+	DeploymentNetwork string `json:"deployment_network"`
 }
 
 func (i IntegrationConfig) SSHPrivateKeyPath() (string, error) {

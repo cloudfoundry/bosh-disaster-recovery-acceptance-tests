@@ -1,8 +1,9 @@
 package runner
 
 import (
-	"github.com/cloudfoundry-incubator/bosh-disaster-recovery-acceptance-tests/acceptance"
 	"time"
+
+	"github.com/cloudfoundry-incubator/bosh-disaster-recovery-acceptance-tests/acceptance"
 )
 
 type Config struct {
@@ -12,6 +13,11 @@ type Config struct {
 	Timeout       time.Duration
 }
 
+type CloudConfig struct {
+	DefaultVMType  string
+	DefaultNetwork string
+}
+
 type BOSHConfig struct {
 	Host              string
 	SSHUsername       string
@@ -19,6 +25,7 @@ type BOSHConfig struct {
 	Client            string
 	ClientSecret      string
 	CACertPath        string
+	CloudConfig       CloudConfig
 }
 
 func NewConfig(integrationConfig acceptance.IntegrationConfig, bbrBinaryPath, artifactDirPath string) (Config, error) {
@@ -37,6 +44,16 @@ func NewConfig(integrationConfig acceptance.IntegrationConfig, bbrBinaryPath, ar
 		timeout = time.Duration(integrationConfig.TimeoutMinutes) * time.Minute
 	}
 
+	defaultVMType := "default"
+	if integrationConfig.DeploymentVMType != "" {
+		defaultVMType = integrationConfig.DeploymentVMType
+	}
+
+	defaultNetwork := "default"
+	if integrationConfig.DeploymentNetwork != "" {
+		defaultNetwork = integrationConfig.DeploymentNetwork
+	}
+
 	return Config{
 		BOSH: BOSHConfig{
 			Host:              integrationConfig.Host,
@@ -45,6 +62,10 @@ func NewConfig(integrationConfig acceptance.IntegrationConfig, bbrBinaryPath, ar
 			Client:            integrationConfig.BOSHClient,
 			ClientSecret:      integrationConfig.BOSHClientSecret,
 			CACertPath:        caCertPath,
+			CloudConfig: CloudConfig{
+				DefaultVMType:  defaultVMType,
+				DefaultNetwork: defaultNetwork,
+			},
 		},
 		BBRBinaryPath: bbrBinaryPath,
 		ArtifactPath:  artifactDirPath,

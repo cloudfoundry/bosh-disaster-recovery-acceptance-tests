@@ -1,6 +1,8 @@
 package testcases
 
 import (
+	"fmt"
+
 	"github.com/cloudfoundry-incubator/bosh-disaster-recovery-acceptance-tests/fixtures"
 	. "github.com/cloudfoundry-incubator/bosh-disaster-recovery-acceptance-tests/runner"
 	. "github.com/onsi/ginkgo"
@@ -22,6 +24,8 @@ func (t DeploymentTestcase) BeforeBackup(config Config) {
 			"-d",
 			"sdk-test",
 			"deploy",
+			fmt.Sprintf("--var=vm_type=%s", config.BOSH.CloudConfig.DefaultVMType),
+			fmt.Sprintf("--var=network_name=%s", config.BOSH.CloudConfig.DefaultNetwork),
 			fixtures.Path("sdk-manifest.yml"),
 		)
 	})
