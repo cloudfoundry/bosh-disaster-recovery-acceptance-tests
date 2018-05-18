@@ -12,6 +12,7 @@ type IntegrationConfig struct {
 	BOSHCACert        string `json:"bosh_ca_cert"`
 	DeploymentVMType  string `json:"deployment_vm_type"`
 	DeploymentNetwork string `json:"deployment_network"`
+	DeploymentAZ      string `json:"deployment_az"`
 }
 
 func (i IntegrationConfig) SSHPrivateKeyPath() (string, error) {

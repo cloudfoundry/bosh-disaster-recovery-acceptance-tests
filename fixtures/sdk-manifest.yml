@@ -25,7 +25,7 @@ instance_groups:
   instances: 1
   networks:
   - {name: ((network_name))}
-  azs: [z1]
+  azs: [((az_name))]
   jobs:
   - name: database-backup-restorer
     release: backup-and-restore-sdk

@@ -16,6 +16,7 @@ type Config struct {
 type CloudConfig struct {
 	DefaultVMType  string
 	DefaultNetwork string
+	DefaultAZ      string
 }
 
 type BOSHConfig struct {
@@ -54,6 +55,11 @@ func NewConfig(integrationConfig acceptance.IntegrationConfig, bbrBinaryPath, ar
 		defaultNetwork = integrationConfig.DeploymentNetwork
 	}
 
+	defaultAZ := "z1"
+	if integrationConfig.DeploymentAZ != "" {
+		defaultAZ = integrationConfig.DeploymentAZ
+	}
+
 	return Config{
 		BOSH: BOSHConfig{
 			Host:              integrationConfig.Host,
@@ -65,6 +71,7 @@ func NewConfig(integrationConfig acceptance.IntegrationConfig, bbrBinaryPath, ar
 			CloudConfig: CloudConfig{
 				DefaultVMType:  defaultVMType,
 				DefaultNetwork: defaultNetwork,
+				DefaultAZ:      defaultAZ,
 			},
 		},
 		BBRBinaryPath: bbrBinaryPath,

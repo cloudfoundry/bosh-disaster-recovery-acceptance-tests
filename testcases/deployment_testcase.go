@@ -26,6 +26,7 @@ func (t DeploymentTestcase) BeforeBackup(config Config) {
 			"deploy",
 			fmt.Sprintf("--var=vm_type=%s", config.BOSH.CloudConfig.DefaultVMType),
 			fmt.Sprintf("--var=network_name=%s", config.BOSH.CloudConfig.DefaultNetwork),
+			fmt.Sprintf("--var=az_name=%s", config.BOSH.CloudConfig.DefaultAZ),
 			fixtures.Path("sdk-manifest.yml"),
 		)
 	})
