@@ -21,8 +21,8 @@ Please refer to our b-drats [pipeline definition](https://github.com/cloudfoundr
 
 1. Clone this repo
     ```bash
-    $ go get github.com/cloudfoundry-incubator/disaster-recovery-acceptance-tests
-    $ cd $GOPATH/src/github.com/cloudfoundry-incubator/disaster-recovery-acceptance-tests
+    $ go get github.com/cloudfoundry-incubator/bosh-disaster-recovery-acceptance-tests
+    $ cd $GOPATH/src/github.com/cloudfoundry-incubator/bosh-disaster-recovery-acceptance-tests
     ```
 1. Create an `integration-config.json` file, for example:
     ```json
