@@ -15,7 +15,7 @@ The test runner provides hooks around `bbr director backup` and `bbr director re
 
 We encourage you to use our [`run-b-drats` CI task](https://github.com/cloudfoundry-incubator/bosh-disaster-recovery-acceptance-tests/tree/master/ci/run-b-drats) to run B-DRATS in your Concourse pipeline.
 
-Please refer to our b-drats [pipeline definition](https://github.com/cloudfoundry-incubator/backup-and-restore-ci/blob/master/ci/b-drats/pipeline.yml) for a working example.
+Please refer to our b-drats [pipeline definition](https://github.com/cloudfoundry-incubator/backup-and-restore-ci/blob/master/pipelines/b-drats/pipeline.yml) for a working example.
 
 ## Running B-DRATs locally
 
