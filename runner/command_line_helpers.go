@@ -40,7 +40,7 @@ func runCommandWithStream(description string, writer io.Writer, cmd string, args
 }
 
 func getBoshBaseCommand(config Config) string {
-	return fmt.Sprintf("bosh-cli "+
+	return fmt.Sprintf("bosh "+
 		"--environment=%s "+
 		"--client=%s "+
 		"--client-secret=%s "+
