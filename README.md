@@ -33,7 +33,7 @@ Please refer to our b-drats [pipeline definition](https://github.com/cloudfoundr
       "bosh_client": "bosh-client-name",
       "bosh_client_secret": "bosh-client-secret",
       "bosh_ca_cert": "bosh-ca-cert",
-      "timeout_in_minutes": "eventually-timeout-in-minutes",
+      "timeout_in_minutes": 30,
       "include_deployment_testcase": true
     }
     ```
