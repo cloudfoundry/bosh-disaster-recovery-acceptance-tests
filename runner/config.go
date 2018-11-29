@@ -40,7 +40,7 @@ func NewConfig(integrationConfig acceptance.IntegrationConfig, bbrBinaryPath, ar
 		return Config{}, err
 	}
 
-	timeout := 30 * time.Minute
+	timeout := 50 * time.Minute
 	if integrationConfig.TimeoutMinutes != 0 {
 		timeout = time.Duration(integrationConfig.TimeoutMinutes) * time.Minute
 	}
