@@ -13,6 +13,7 @@ type IntegrationConfig struct {
 	DeploymentVMType  string `json:"deployment_vm_type"`
 	DeploymentNetwork string `json:"deployment_network"`
 	DeploymentAZ      string `json:"deployment_az"`
+	StemcellPath      string `json:"stemcell_path"`
 }
 
 func (i IntegrationConfig) SSHPrivateKeyPath() (string, error) {

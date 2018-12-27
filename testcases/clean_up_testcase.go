@@ -9,13 +9,13 @@ import (
 	. "github.com/onsi/gomega"
 )
 
-type DeploymentTestcase struct{}
+type CleanUpTestcase struct{}
 
-func (t DeploymentTestcase) Name() string {
-	return "deployment_testcase"
+func (t CleanUpTestcase) Name() string {
+	return "clean_up_testcase"
 }
 
-func (t DeploymentTestcase) BeforeBackup(config Config) {
+func (t CleanUpTestcase) BeforeBackup(config Config) {
 	By("uploading stemcell", func() {
 		RunBoshCommandSuccessfullyWithFailureMessage(
 			"bosh upload stemcell",
@@ -42,7 +42,7 @@ func (t DeploymentTestcase) BeforeBackup(config Config) {
 	})
 }
 
-func (t DeploymentTestcase) AfterBackup(config Config) {
+func (t CleanUpTestcase) AfterBackup(config Config) {
 	By("deleting sdk deployment ", func() {
 		RunBoshCommandSuccessfullyWithFailureMessage("bosh delete sdk deployment",
 			config,
@@ -52,9 +52,28 @@ func (t DeploymentTestcase) AfterBackup(config Config) {
 			"delete-deployment",
 		)
 	})
+
+	By("cleaning up", func() {
+		RunBoshCommandSuccessfullyWithFailureMessage("bosh delete sdk deployment",
+			config,
+			"-n",
+			"clean-up",
+			"--all",
+		)
+	})
 }
 
-func (t DeploymentTestcase) AfterRestore(config Config) {
+func (t CleanUpTestcase) AfterRestore(config Config) {
+	By("re-uploading stemcell", func() {
+		RunBoshCommandSuccessfullyWithFailureMessage(
+			"bosh upload stemcell",
+			config,
+			"upload-stemcell",
+			config.StemcellPath,
+			"--fix",
+		)
+	})
+
 	By("doing cck to bring back instances", func() {
 		RunBoshCommandSuccessfullyWithFailureMessage("bosh cck sdk deployment",
 			config,
@@ -76,10 +95,9 @@ func (t DeploymentTestcase) AfterRestore(config Config) {
 		)
 		Expect(string(session.Out.Contents())).To(MatchRegexp("database-backuper/[a-z0-9-]+[ \t]+running"))
 	})
-
 }
 
-func (t DeploymentTestcase) Cleanup(config Config) {
+func (t CleanUpTestcase) Cleanup(config Config) {
 	By("deleting sdk deployment ", func() {
 		RunBoshCommandSuccessfullyWithFailureMessage("bosh delete sdk deployment",
 			config,

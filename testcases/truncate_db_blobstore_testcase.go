@@ -9,13 +9,13 @@ import (
 	. "github.com/onsi/gomega"
 )
 
-type DeploymentTestcase struct{}
+type TruncateDBBlobstoreTestcase struct{}
 
-func (t DeploymentTestcase) Name() string {
-	return "deployment_testcase"
+func (t TruncateDBBlobstoreTestcase) Name() string {
+	return "truncate_db_blobstore_testcase"
 }
 
-func (t DeploymentTestcase) BeforeBackup(config Config) {
+func (t TruncateDBBlobstoreTestcase) BeforeBackup(config Config) {
 	By("uploading stemcell", func() {
 		RunBoshCommandSuccessfullyWithFailureMessage(
 			"bosh upload stemcell",
@@ -42,19 +42,43 @@ func (t DeploymentTestcase) BeforeBackup(config Config) {
 	})
 }
 
-func (t DeploymentTestcase) AfterBackup(config Config) {
-	By("deleting sdk deployment ", func() {
-		RunBoshCommandSuccessfullyWithFailureMessage("bosh delete sdk deployment",
+func (t TruncateDBBlobstoreTestcase) AfterBackup(config Config) {
+	monitStop(config, "director")
+	monitStop(config, "uaa")
+	monitStop(config, "credhub")
+	monitStop(config, "blobstore_nginx")
+	monitStop(config, "postgres")
+
+	RunCommandInDirectorVMSuccessfullyWithFailureMessage(
+		"truncate db/blobstore",
+		config,
+		"sudo rm -rf /var/vcap/store/{blobstore,director,postgres*}",
+	)
+
+	RunCommandInDirectorVMSuccessfullyWithFailureMessage(
+		"pre-start all jobs",
+		config,
+		"sudo bash -c",
+		"'for pre in $(ls /var/vcap/jobs/**/bin/pre-start); do $pre; done'",
+	)
+
+	monitStart(config, "postgres")
+	monitStart(config, "blobstore_nginx")
+	monitStart(config, "uaa")
+	monitStart(config, "credhub")
+	monitStart(config, "director")
+
+	Eventually(func() int {
+		session := RunBoshCommand(
+			"bosh env",
 			config,
-			"-n",
-			"-d",
-			"sdk-test",
-			"delete-deployment",
+			"env",
 		)
-	})
+		return session.Wait().ExitCode()
+	}).Should(Equal(0))
 }
 
-func (t DeploymentTestcase) AfterRestore(config Config) {
+func (t TruncateDBBlobstoreTestcase) AfterRestore(config Config) {
 	By("doing cck to bring back instances", func() {
 		RunBoshCommandSuccessfullyWithFailureMessage("bosh cck sdk deployment",
 			config,
@@ -76,10 +100,9 @@ func (t DeploymentTestcase) AfterRestore(config Config) {
 		)
 		Expect(string(session.Out.Contents())).To(MatchRegexp("database-backuper/[a-z0-9-]+[ \t]+running"))
 	})
-
 }
 
-func (t DeploymentTestcase) Cleanup(config Config) {
+func (t TruncateDBBlobstoreTestcase) Cleanup(config Config) {
 	By("deleting sdk deployment ", func() {
 		RunBoshCommandSuccessfullyWithFailureMessage("bosh delete sdk deployment",
 			config,

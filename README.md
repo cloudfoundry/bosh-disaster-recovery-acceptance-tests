@@ -34,7 +34,10 @@ Please refer to our b-drats [pipeline definition](https://github.com/cloudfoundr
       "bosh_client_secret": "bosh-client-secret",
       "bosh_ca_cert": "bosh-ca-cert",
       "timeout_in_minutes": 30,
-      "include_deployment_testcase": true
+      "stemcell_path": "stemcell-path.tgz",
+      "include_deployment_testcase": true,
+      "include_truncate_db_blobstore_testcase": true,
+      "include_clean_up_testcase": true
     }
     ```
 1. Export `INTEGRATION_CONFIG_PATH` to be path to `integration-config.json` file you just created.
@@ -53,6 +56,7 @@ Please refer to our b-drats [pipeline definition](https://github.com/cloudfoundr
 * `bosh_client_secret` - the BOSH director API client secret 
 * `bosh_ca_cert` - the BOSH director API CA certificate
 * `timeout_in_minutes` - default ginkgo `Eventually` timeout in minutes, defaults to `30`
+* `stemcell_path` - absolute path to stemcell tarball
 * `include_<testcase-name>` - flag for whether to run a given testcase, if omitted defaults to `false`
 * `deployment_vm_type` - cloud config vm_type to be passed into config, if omitted defaults to `default` (used by example deployment_testcase)
 * `deployment_network` - cloud config network to be passed into config, if omitted defaults to `default` (used by example deployment_testcase)
