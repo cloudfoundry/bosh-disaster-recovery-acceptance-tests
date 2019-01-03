@@ -12,6 +12,5 @@ export GOPATH="$PWD"
 export PATH="$PATH:$GOPATH/bin"
 INTEGRATION_CONFIG_PATH="$PWD/${INTEGRATION_CONFIG_PATH}"
 
-pushd $B_DRATS_PATH
-  scripts/_run_acceptance_tests.sh
-popd
+./$B_DRATS_PATH/scripts/_run_acceptance_tests.sh
+
