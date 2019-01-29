@@ -16,7 +16,9 @@ func RunBoshDisasterRecoveryAcceptanceTestsSerially(config Config, testCases []T
 		fmt.Println(t.Name())
 	}
 
-	for _, testCase := range testCases {
+	for _, test := range testCases {
+		testCase := test
+
 		Context(fmt.Sprintf("test case %s", testCase.Name()), func() {
 			var artifactPath string
 			BeforeEach(func() {

@@ -10,7 +10,7 @@ type Config struct {
 	BOSH          BOSHConfig
 	BBRBinaryPath string
 	ArtifactPath  string
-	StemcellPath  string
+	StemcellSrc   string
 	Timeout       time.Duration
 }
 
@@ -75,7 +75,7 @@ func NewConfig(integrationConfig acceptance.IntegrationConfig, bbrBinaryPath, ar
 				DefaultAZ:      defaultAZ,
 			},
 		},
-		StemcellPath:  integrationConfig.StemcellPath,
+		StemcellSrc:   integrationConfig.StemcellSrc,
 		BBRBinaryPath: bbrBinaryPath,
 		ArtifactPath:  artifactDirPath,
 		Timeout:       timeout,

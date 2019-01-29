@@ -21,7 +21,7 @@ func (t TruncateDBBlobstoreTestcase) BeforeBackup(config Config) {
 			"bosh upload stemcell",
 			config,
 			"upload-stemcell",
-			config.StemcellPath,
+			config.StemcellSrc,
 		)
 	})
 
