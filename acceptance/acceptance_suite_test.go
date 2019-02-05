@@ -10,9 +10,10 @@ import (
 	"testing"
 
 	"encoding/json"
+	"io/ioutil"
+
 	"github.com/cloudfoundry-incubator/bosh-disaster-recovery-acceptance-tests/acceptance"
 	"github.com/cloudfoundry-incubator/bosh-disaster-recovery-acceptance-tests/runner"
-	"io/ioutil"
 )
 
 func TestAcceptance(t *testing.T) {
