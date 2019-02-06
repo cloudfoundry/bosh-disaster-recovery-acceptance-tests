@@ -2,6 +2,7 @@ package testcases
 
 import (
 	"fmt"
+	"time"
 
 	"github.com/cloudfoundry-incubator/bosh-disaster-recovery-acceptance-tests/fixtures"
 	. "github.com/cloudfoundry-incubator/bosh-disaster-recovery-acceptance-tests/runner"
@@ -61,6 +62,9 @@ func (t TruncateDBBlobstoreTestcase) AfterBackup(config Config) {
 		"sudo bash -c",
 		"'for pre in $(ls /var/vcap/jobs/**/bin/pre-start); do $pre; done'",
 	)
+
+	fmt.Println("Sleeping for 20 seconds to allow all jobs to finish pre-start")
+	time.Sleep(time.Second * 20)
 
 	monitStart(config, "postgres")
 	monitStart(config, "blobstore_nginx")
