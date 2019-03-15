@@ -2,10 +2,18 @@
 
 
 [[projects]]
+  digest = "1:9422368b1aa123a27f1c4d12b63a7d70bc503f3ce7022931ae4881e29ea275b9"
   name = "github.com/onsi/ginkgo"
   packages = [
     ".",
     "config",
+    "ginkgo",
+    "ginkgo/convert",
+    "ginkgo/interrupthandler",
+    "ginkgo/nodot",
+    "ginkgo/testrunner",
+    "ginkgo/testsuite",
+    "ginkgo/watch",
     "internal/codelocation",
     "internal/containernode",
     "internal/failer",
@@ -21,12 +29,14 @@
     "reporters/stenographer",
     "reporters/stenographer/support/go-colorable",
     "reporters/stenographer/support/go-isatty",
-    "types"
+    "types",
   ]
+  pruneopts = "UT"
   revision = "9eda700730cba42af70d53180f9dcce9266bc2bc"
   version = "v1.4.0"
 
 [[projects]]
+  digest = "1:f7972020aa715891374f50b4619442cbde533fa35f2ced3756a4f597c85ad191"
   name = "github.com/onsi/gomega"
   packages = [
     ".",
@@ -42,28 +52,34 @@
     "matchers/support/goraph/edge",
     "matchers/support/goraph/node",
     "matchers/support/goraph/util",
-    "types"
+    "types",
   ]
+  pruneopts = "UT"
   revision = "003f63b7f4cff3fc95357005358af2de0f5fe152"
   version = "v1.3.0"
 
 [[projects]]
   branch = "master"
+  digest = "1:a15ea845207f8e929585b84c3e520c04b618c20d9a3c1c65c7465cc24ef2c6f5"
   name = "golang.org/x/net"
   packages = [
     "html",
     "html/atom",
-    "html/charset"
+    "html/charset",
   ]
+  pruneopts = "UT"
   revision = "5f9ae10d9af5b1c89ae6904293b14b064d4ada23"
 
 [[projects]]
   branch = "master"
+  digest = "1:c27b7422f08253eea48785ba5f532532e85af123607315811a27f586bd531505"
   name = "golang.org/x/sys"
   packages = ["unix"]
+  pruneopts = "UT"
   revision = "bb9c189858d91f42db229b04d45a4c3d23a7662a"
 
 [[projects]]
+  digest = "1:aa4d6967a3237f8367b6bf91503964a77183ecf696f1273e8ad3551bb4412b5f"
   name = "golang.org/x/text"
   packages = [
     "encoding",
@@ -82,20 +98,28 @@
     "language",
     "runes",
     "transform",
-    "unicode/cldr"
+    "unicode/cldr",
   ]
+  pruneopts = "UT"
   revision = "f21a4dfb5e38f5895301dc265a8def02365cc3d0"
   version = "v0.3.0"
 
 [[projects]]
+  digest = "1:342378ac4dcb378a5448dd723f0784ae519383532f5e70ade24132c4c8693202"
   name = "gopkg.in/yaml.v2"
   packages = ["."]
+  pruneopts = "UT"
   revision = "5420a8b6744d3b0345ab293f6fcba19c978f1183"
   version = "v2.2.1"
 
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "1b0f2890c020e9a78afc0732a6ce22887293f04fbb3f7a16b82013c913f63e09"
+  input-imports = [
+    "github.com/onsi/ginkgo",
+    "github.com/onsi/ginkgo/ginkgo",
+    "github.com/onsi/gomega",
+    "github.com/onsi/gomega/gexec",
+  ]
   solver-name = "gps-cdcl"
   solver-version = 1
