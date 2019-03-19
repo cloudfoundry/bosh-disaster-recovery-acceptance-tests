@@ -8,6 +8,7 @@ import (
 
 type Config struct {
 	BOSH          BOSHConfig
+	Credhub       CredhubConfig
 	BBRBinaryPath string
 	ArtifactPath  string
 	StemcellSrc   string
@@ -28,6 +29,12 @@ type BOSHConfig struct {
 	ClientSecret      string
 	CACertPath        string
 	CloudConfig       CloudConfig
+}
+
+type CredhubConfig struct {
+  CA           string
+  Client       string
+  ClientSecret string
 }
 
 func NewConfig(integrationConfig acceptance.IntegrationConfig, bbrBinaryPath, artifactDirPath string) (Config, error) {
@@ -75,6 +82,11 @@ func NewConfig(integrationConfig acceptance.IntegrationConfig, bbrBinaryPath, ar
 				DefaultAZ:      defaultAZ,
 			},
 		},
+    Credhub: CredhubConfig {
+      CA:           integrationConfig.CredhubCACert,
+      Client:       integrationConfig.CredhubClient,
+      ClientSecret: integrationConfig.CredhubClientSecret,
+    },
 		StemcellSrc:   integrationConfig.StemcellSrc,
 		BBRBinaryPath: bbrBinaryPath,
 		ArtifactPath:  artifactDirPath,

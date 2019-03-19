@@ -3,17 +3,20 @@ package acceptance
 import "io/ioutil"
 
 type IntegrationConfig struct {
-	Host              string `json:"bosh_host"`
-	SSHUsername       string `json:"bosh_ssh_username"`
-	SSHPrivateKey     string `json:"bosh_ssh_private_key"`
-	TimeoutMinutes    int64  `json:"timeout_in_minutes"`
-	BOSHClient        string `json:"bosh_client"`
-	BOSHClientSecret  string `json:"bosh_client_secret"`
-	BOSHCACert        string `json:"bosh_ca_cert"`
-	DeploymentVMType  string `json:"deployment_vm_type"`
-	DeploymentNetwork string `json:"deployment_network"`
-	DeploymentAZ      string `json:"deployment_az"`
-	StemcellSrc       string `json:"stemcell_src"`
+	Host                string `json:"bosh_host"`
+	SSHUsername         string `json:"bosh_ssh_username"`
+	SSHPrivateKey       string `json:"bosh_ssh_private_key"`
+	TimeoutMinutes      int64  `json:"timeout_in_minutes"`
+	BOSHClient          string `json:"bosh_client"`
+	BOSHClientSecret    string `json:"bosh_client_secret"`
+	CredhubClient       string `json:"credhub_client"`
+	CredhubClientSecret string `json:"credhub_client_secret"`
+	BOSHCACert          string `json:"bosh_ca_cert"`
+  CredhubCACert       string `json:"credhub_ca_cert"`
+	DeploymentVMType    string `json:"deployment_vm_type"`
+	DeploymentNetwork   string `json:"deployment_network"`
+	DeploymentAZ        string `json:"deployment_az"`
+	StemcellSrc         string `json:"stemcell_src"`
 }
 
 func (i IntegrationConfig) SSHPrivateKeyPath() (string, error) {
