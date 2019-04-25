@@ -35,6 +35,7 @@ type CredhubConfig struct {
 	CA           string
 	Client       string
 	ClientSecret string
+	Server       string
 }
 
 func NewConfig(integrationConfig acceptance.IntegrationConfig, bbrBinaryPath, artifactDirPath string) (Config, error) {
@@ -86,6 +87,7 @@ func NewConfig(integrationConfig acceptance.IntegrationConfig, bbrBinaryPath, ar
 			CA:           integrationConfig.CredhubCACert,
 			Client:       integrationConfig.CredhubClient,
 			ClientSecret: integrationConfig.CredhubClientSecret,
+			Server:       integrationConfig.CredhubServer,
 		},
 		StemcellSrc:   integrationConfig.StemcellSrc,
 		BBRBinaryPath: bbrBinaryPath,

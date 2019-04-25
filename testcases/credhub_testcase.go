@@ -1,8 +1,6 @@
 package testcases
 
 import (
-	"fmt"
-
 	"code.cloudfoundry.org/credhub-cli/credhub"
 	"code.cloudfoundry.org/credhub-cli/credhub/auth"
 	"code.cloudfoundry.org/credhub-cli/credhub/credentials/values"
@@ -54,9 +52,9 @@ func (t CredhubTestcase) Cleanup(config Config) {
 }
 
 func (t CredhubTestcase) credhubClient(config Config) (*credhub.CredHub, error) {
-	return credhub.New(fmt.Sprintf("https://%s:8844", config.BOSH.Host),
+	return credhub.New(
+		config.Credhub.Server,
 		credhub.CaCerts(config.Credhub.CA),
-		credhub.Auth(
-			auth.UaaClientCredentials(config.Credhub.Client, config.Credhub.ClientSecret),
-		))
+		credhub.Auth(auth.UaaClientCredentials(config.Credhub.Client, config.Credhub.ClientSecret)),
+	)
 }

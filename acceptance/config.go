@@ -9,10 +9,11 @@ type IntegrationConfig struct {
 	TimeoutMinutes      int64  `json:"timeout_in_minutes"`
 	BOSHClient          string `json:"bosh_client"`
 	BOSHClientSecret    string `json:"bosh_client_secret"`
+	BOSHCACert          string `json:"bosh_ca_cert"`
 	CredhubClient       string `json:"credhub_client"`
 	CredhubClientSecret string `json:"credhub_client_secret"`
-	BOSHCACert          string `json:"bosh_ca_cert"`
 	CredhubCACert       string `json:"credhub_ca_cert"`
+	CredhubServer       string `json:"credhub_server"`
 	DeploymentVMType    string `json:"deployment_vm_type"`
 	DeploymentNetwork   string `json:"deployment_network"`
 	DeploymentAZ        string `json:"deployment_az"`
