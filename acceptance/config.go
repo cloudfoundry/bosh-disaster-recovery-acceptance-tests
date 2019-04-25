@@ -12,7 +12,7 @@ type IntegrationConfig struct {
 	CredhubClient       string `json:"credhub_client"`
 	CredhubClientSecret string `json:"credhub_client_secret"`
 	BOSHCACert          string `json:"bosh_ca_cert"`
-  CredhubCACert       string `json:"credhub_ca_cert"`
+	CredhubCACert       string `json:"credhub_ca_cert"`
 	DeploymentVMType    string `json:"deployment_vm_type"`
 	DeploymentNetwork   string `json:"deployment_network"`
 	DeploymentAZ        string `json:"deployment_az"`

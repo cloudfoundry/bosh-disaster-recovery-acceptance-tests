@@ -32,9 +32,9 @@ type BOSHConfig struct {
 }
 
 type CredhubConfig struct {
-  CA           string
-  Client       string
-  ClientSecret string
+	CA           string
+	Client       string
+	ClientSecret string
 }
 
 func NewConfig(integrationConfig acceptance.IntegrationConfig, bbrBinaryPath, artifactDirPath string) (Config, error) {
@@ -82,11 +82,11 @@ func NewConfig(integrationConfig acceptance.IntegrationConfig, bbrBinaryPath, ar
 				DefaultAZ:      defaultAZ,
 			},
 		},
-    Credhub: CredhubConfig {
-      CA:           integrationConfig.CredhubCACert,
-      Client:       integrationConfig.CredhubClient,
-      ClientSecret: integrationConfig.CredhubClientSecret,
-    },
+		Credhub: CredhubConfig{
+			CA:           integrationConfig.CredhubCACert,
+			Client:       integrationConfig.CredhubClient,
+			ClientSecret: integrationConfig.CredhubClientSecret,
+		},
 		StemcellSrc:   integrationConfig.StemcellSrc,
 		BBRBinaryPath: bbrBinaryPath,
 		ArtifactPath:  artifactDirPath,
