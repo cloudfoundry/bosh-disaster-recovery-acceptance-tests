@@ -1,6 +1,7 @@
 package runner
 
 import (
+	"os"
 	"time"
 
 	"github.com/cloudfoundry-incubator/bosh-disaster-recovery-acceptance-tests/acceptance"
@@ -47,6 +48,12 @@ func NewConfig(integrationConfig acceptance.IntegrationConfig, bbrBinaryPath, ar
 	caCertPath, err := integrationConfig.CACertPath()
 	if err != nil {
 		return Config{}, err
+	}
+
+	if integrationConfig.CredhubServer != "" {
+		if err := os.Setenv("CREDHUB_PROXY", integrationConfig.GetCredhubProxy(privateKeyPath)); err != nil {
+			return Config{}, err
+		}
 	}
 
 	timeout := 50 * time.Minute

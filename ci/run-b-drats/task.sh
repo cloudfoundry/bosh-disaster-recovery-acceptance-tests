@@ -1,7 +1,6 @@
 #!/usr/bin/env bash
 
-set -e
-set -u
+set -eu
 
 pushd $BBR_RELEASE_PATH
   tar xvf *.tar
