@@ -18,6 +18,7 @@ var _ = Describe("backing up bosh", func() {
 	testCases := []runner.TestCase{
 		testcases.DeploymentTestcase{},
 		testcases.TruncateDBBlobstoreTestcase{},
+		testcases.CredhubTestcase{},
 	}
 
 	filteredTestCases, err := filter.Filter(testCases)

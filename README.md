@@ -33,8 +33,12 @@ Please refer to our b-drats [pipeline definition](https://github.com/cloudfoundr
       "bosh_client": "bosh-client-name",
       "bosh_client_secret": "bosh-client-secret",
       "bosh_ca_cert": "bosh-ca-cert",
+      "credhub_client":"credhub-client",
+      "credhub_client_secret":"credhub-client-secret",
+      "credhub_ca_cert":"credhub-ca-cert",
       "timeout_in_minutes": 30,
       "stemcell_src": "stemcell-path.tgz",
+      "include_credhub_testcase": true,
       "include_deployment_testcase": true,
       "include_truncate_db_blobstore_testcase": true
     }
@@ -54,6 +58,9 @@ Please refer to our b-drats [pipeline definition](https://github.com/cloudfoundr
 * `bosh_client` - the BOSH director API client
 * `bosh_client_secret` - the BOSH director API client secret 
 * `bosh_ca_cert` - the BOSH director API CA certificate
+* `credhub_client` - the UAA client that is used to authenticate with CredHub
+* `credhub_client_secret` - the UAA secret that is used to authenticate with CredHub
+* `credhub_ca_cert` - the mTLS certificate that is used to communicate with CredHub
 * `timeout_in_minutes` - default ginkgo `Eventually` timeout in minutes, defaults to `30`
 * `stemcell_src` - absolute path to stemcell tarball
 * `include_<testcase-name>` - flag for whether to run a given testcase, if omitted defaults to `false`
