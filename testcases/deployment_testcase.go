@@ -92,7 +92,7 @@ func (t DeploymentTestcase) AfterRestore(config Config) {
 			"small-deployment",
 			"instances",
 		)
-		Expect(string(session.Out.Contents())).To(MatchRegexp("database-backuper/[a-z0-9-]+[ \t]+running"))
+		Expect(string(session.Out.Contents())).To(MatchRegexp("small-job/[a-z0-9-]+[ \t]+running"))
 	})
 }
 
