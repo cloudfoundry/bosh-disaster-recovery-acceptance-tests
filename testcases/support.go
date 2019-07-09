@@ -9,21 +9,6 @@ import (
 	. "github.com/onsi/gomega"
 )
 
-func getStemcell(config Config) string {
-	sess := RunBoshCommandSuccessfullyWithFailureMessage(
-		"bosh stemcells",
-		config,
-		"stemcells",
-	)
-	stemcell := string(sess.Out.Contents())
-	if strings.Contains(stemcell, "trusty") {
-		stemcell = "trusty"
-	} else {
-		stemcell = "xenial"
-	}
-	return stemcell
-}
-
 func monitWait(config Config, jobName, status string) {
 	Eventually(func() string {
 		statusLines := strings.Split(string(RunCommandInDirectorVM(

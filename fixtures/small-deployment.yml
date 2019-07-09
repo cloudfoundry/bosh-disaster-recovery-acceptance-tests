@@ -1,11 +1,11 @@
 ---
-name: sdk-test
+name: small-deployment
 
 releases:
-- name: "backup-and-restore-sdk"
-  version: "1.6.0"
-  url: "https://bosh.io/d/github.com/cloudfoundry-incubator/backup-and-restore-sdk-release?v=1.6.0"
-  sha1: "4e84e1e70e5a6e7a473c4ded5f5e7ae4a3ad65e5"
+- name: "os-conf"
+  version: "21.0.0"
+  url: "https://bosh.io/d/github.com/cloudfoundry/os-conf-release?v=21.0.0"
+  sha1: "7579a96515b265c6d828924bf4f5fae115798199"
 
 stemcells:
 - alias: default
@@ -19,7 +19,7 @@ update:
   update_watch_time: 1000-30000
 
 instance_groups:
-- name: database-backuper
+- name: small-job
   stemcell: default
   vm_type: ((vm_type))
   instances: 1
@@ -27,5 +27,5 @@ instance_groups:
   - {name: ((network_name))}
   azs: [((az_name))]
   jobs:
-  - name: database-backup-restorer
-    release: backup-and-restore-sdk
+  - name: monit
+    release: os-conf
