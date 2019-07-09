@@ -27,18 +27,17 @@ func (t TruncateDBBlobstoreTestcase) BeforeBackup(config Config) {
 	})
 
 	By("deploying sdk deployment ", func() {
-		stemcell := getStemcell(config)
 		RunBoshCommandSuccessfullyWithFailureMessage(
 			"bosh deploy sdk",
 			config,
 			"-n",
 			"-d",
-			"sdk-test",
+			"small-deployment",
 			"deploy",
 			fmt.Sprintf("--var=vm_type=%s", config.BOSH.CloudConfig.DefaultVMType),
 			fmt.Sprintf("--var=network_name=%s", config.BOSH.CloudConfig.DefaultNetwork),
 			fmt.Sprintf("--var=az_name=%s", config.BOSH.CloudConfig.DefaultAZ),
-			fixtures.Path(fmt.Sprintf("sdk-manifest-%s.yml", stemcell)),
+			fixtures.Path("small-deployment.yml"),
 		)
 	})
 }
@@ -88,7 +87,7 @@ func (t TruncateDBBlobstoreTestcase) AfterRestore(config Config) {
 			config,
 			"-n",
 			"-d",
-			"sdk-test",
+			"small-deployment",
 			"cck",
 			"--auto",
 		)
@@ -99,7 +98,7 @@ func (t TruncateDBBlobstoreTestcase) AfterRestore(config Config) {
 			config,
 			"-n",
 			"-d",
-			"sdk-test",
+			"small-deployment",
 			"instances",
 		)
 		Expect(string(session.Out.Contents())).To(MatchRegexp("database-backuper/[a-z0-9-]+[ \t]+running"))
@@ -112,7 +111,7 @@ func (t TruncateDBBlobstoreTestcase) Cleanup(config Config) {
 			config,
 			"-n",
 			"-d",
-			"sdk-test",
+			"small-deployment",
 			"delete-deployment",
 			"--force",
 		)
