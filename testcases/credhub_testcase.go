@@ -18,7 +18,12 @@ func (t CredhubTestcase) Name() string {
 }
 
 func (t CredhubTestcase) BeforeBackup(config Config) {
-	credhubClient, err := t.credhubClient(config)
+	var credhubClient *credhub.CredHub
+	err := attemptWithBackoff(func() error {
+		var err error
+		credhubClient, err = t.credhubClient(config)
+		return err
+	}, 3)
 	Expect(err).ToNot(HaveOccurred())
 
 	_, err = credhubClient.SetPassword(CredentialName, values.Password(CredentialValue))

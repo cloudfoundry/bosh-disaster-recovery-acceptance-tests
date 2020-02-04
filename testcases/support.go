@@ -45,3 +45,21 @@ func monitStart(config Config, jobName string) {
 
 	monitWait(config, jobName, "running")
 }
+
+func attemptWithBackoff(function func() error, attempts int) error {
+	var err error
+	err = function()
+	if err == nil {
+		return nil
+	}
+
+	for i := 1; i < attempts; i++ {
+		backoff := time.Duration(i)
+		time.Sleep(5 * backoff * time.Second)
+		err = function()
+		if err == nil {
+			return nil
+		}
+	}
+	return err
+}
