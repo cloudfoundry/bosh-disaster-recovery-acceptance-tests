@@ -1,0 +1,20 @@
+---
+platform: linux
+
+image_resource:
+  type: registry-image
+  source: {repository: pcfplatformrecovery/backup-and-restore}
+
+inputs:
+- name: terraform-state
+- name: bosh-vars-store
+- name: bosh-disaster-recovery-acceptance-tests-prs
+
+params:
+  BOSH_VARS_STORE_PATH:  # Path to bosh director vars-store YAML file
+  JUMPBOX_VARS_STORE_PATH:
+  BOSH_CLIENT:
+  RESURRECTION:
+
+run:
+  path: bosh-disaster-recovery-acceptance-tests-prs/ci/tasks/update-b-drats-resurrection/task.sh

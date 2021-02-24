@@ -1,0 +1,25 @@
+---
+platform: linux
+
+image_resource:
+  type: registry-image
+  source: {repository: pcfplatformrecovery/backup-and-restore}
+
+inputs:
+- name: bosh-disaster-recovery-acceptance-tests-prs
+- name: bosh-state
+- name: bosh-deployment
+- name: terraform-state
+
+outputs:
+- name: bosh-state-updated
+
+params:
+  DIRECTOR_NAME:
+  ENVIRONMENT_NAME:
+  JUMPBOX_ENVIRONMENT_NAME:
+  GCP_SERVICE_ACCOUNT_KEY:
+  BOSH_OPERATION: create-env # Set bosh command to run, e.g. create-env or delete-env
+
+run:
+  path: bosh-disaster-recovery-acceptance-tests-prs/ci/tasks/bosh-operation/task.sh

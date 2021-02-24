@@ -1,0 +1,29 @@
+---
+platform: linux
+
+image_resource:
+  type: registry-image
+  source: {repository: pcfplatformrecovery/backup-and-restore}
+
+inputs:
+- name: bosh-disaster-recovery-acceptance-tests-prs
+- name: terraform-state
+- name: bosh-vars-store
+- name: stemcell
+
+outputs:
+- name: b-drats-integration-config
+
+params:
+  BOSH_VARS_STORE_PATH:  # Path to bosh director vars-store YAML file
+  BOSH_SSH_USERNAME: jumpbox
+  TIMEOUT_IN_MINUTES: 30
+  BOSH_CLIENT: admin
+  CREDHUB_CLIENT: credhub-admin
+  CREDHUB_SERVER:
+  INCLUDE_DEPLOYMENT_TESTCASE: true
+  INCLUDE_TRUNCATE_DB_BLOBSTORE_TESTCASE: true
+  INCLUDE_CREDHUB_TESTCASE: true
+
+run:
+  path: bosh-disaster-recovery-acceptance-tests-prs/ci/tasks/extract-b-drats-integration-config/task.sh

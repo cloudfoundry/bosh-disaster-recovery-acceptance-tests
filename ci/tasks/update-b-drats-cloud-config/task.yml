@@ -1,0 +1,21 @@
+---
+platform: linux
+
+image_resource:
+  type: registry-image
+  source: {repository: pcfplatformrecovery/backup-and-restore}
+
+inputs:
+- name: cloud-config
+- name: terraform-state
+- name: bosh-vars-store
+- name: bosh-disaster-recovery-acceptance-tests-prs
+
+params:
+  CLOUD_CONFIG_PATH:
+  BOSH_VARS_STORE_PATH:  # Path to bosh director vars-store YAML file
+  BOSH_CLIENT:
+  JUMPBOX_VARS_STORE_PATH:
+
+run:
+  path: bosh-disaster-recovery-acceptance-tests-prs/ci/tasks/update-b-drats-cloud-config/task.sh
