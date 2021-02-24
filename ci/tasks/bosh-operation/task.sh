@@ -57,4 +57,4 @@ if [[ ${BOSH_OPERATION} == "delete-env" ]]; then
   rm "bosh-state/${ENVIRONMENT_NAME}/creds.yml"
 fi
 
-}
+  
