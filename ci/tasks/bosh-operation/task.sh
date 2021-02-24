@@ -22,6 +22,10 @@ tags="[$(terraform_output director-tag)]"
 internal_cidr="$(terraform_output director-subnetwork-cidr-range)"
 project_id="$(terraform_output projectid)"
 
+function populate_updated_bosh_state() {
+  cp -r bosh-state/. bosh-state-updated
+}
+trap populate_updated_bosh_state EXIT
 
 export BOSH_ALL_PROXY="ssh+socks5://jumpbox@${jumpbox_ip}:22?private-key=${jumpbox_private_key}"
 
@@ -52,3 +56,5 @@ export BOSH_ALL_PROXY="ssh+socks5://jumpbox@${jumpbox_ip}:22?private-key=${jumpb
 if [[ ${BOSH_OPERATION} == "delete-env" ]]; then
   rm "bosh-state/${ENVIRONMENT_NAME}/creds.yml"
 fi
+
+}

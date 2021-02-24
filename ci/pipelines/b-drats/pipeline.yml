@@ -74,12 +74,11 @@ resources:
     stop: 5:00 PM
     days: [Monday, Tuesday, Wednesday, Thursday, Friday]
 
-- name: bbl-state-b-drats
+- name: bosh-state-b-drats
   type: vault
   source:
     <<: *vault_creds
     path: /concourse/common/infrastructure/bosh/b-drats
-    tarball: true
 
 jobs:
 - name: deploy-b-drats-prs
@@ -92,7 +91,7 @@ jobs:
     - get: bosh-deployment
     - get: jumpbox-deployment
     - get: bosh-disaster-recovery-acceptance-tests-prs
-    - get: bbl-state-b-drats
+    - get: bosh-state-b-drats
   - put: bosh-disaster-recovery-acceptance-tests-prs
     params:
       path: bosh-disaster-recovery-acceptance-tests-prs
@@ -100,7 +99,7 @@ jobs:
       context: b-drats
   - put: terraform
     params:
-      terraform_source: bosh-disaster-recovery-acceptance-tests-prs/ci/terraform/gcp/
+      terraform_source: bosh-disaster-recovery-acceptance-tests-prs/ci/infrastructure/terraform/gcp/
       env_name: b-drats-prs
       delete_on_failure: true
       vars:
@@ -117,16 +116,16 @@ jobs:
   - task: jumpbox-create-env
     file: bosh-disaster-recovery-acceptance-tests-prs/ci/tasks/jumpbox-operation/task.yml
     input_mapping:
-      bosh-state: bbl-state-b-drats
+      bosh-state: bosh-state-b-drats
       terraform-state: terraform
     params:
       ENVIRONMENT_NAME: "b-drats-prs/jumpbox"
       BOSH_OPERATION: "create-env"
       GCP_SERVICE_ACCOUNT_KEY: ((bosh_director.service_account_key))
     ensure:
-      put: bbl-state-b-drats
+      put: bosh-state-b-drats
       params:
-        data: bbl-state-b-drats
+        data: bosh-state-updated
     on_failure:
       put: bosh-disaster-recovery-acceptance-tests-prs
       params:
@@ -136,7 +135,7 @@ jobs:
   - task: bosh-create-env
     file: bosh-disaster-recovery-acceptance-tests-prs/ci/tasks/bosh-operation/task.yml
     input_mapping:
-      bosh-state: bbl-state-b-drats
+      bosh-state: bosh-state-b-drats
       terraform-state: terraform
     params:
       ENVIRONMENT_NAME: "b-drats-prs/director"
@@ -145,9 +144,9 @@ jobs:
       BOSH_OPERATION: "create-env"
       GCP_SERVICE_ACCOUNT_KEY: ((bosh_director.service_account_key))
     ensure:
-      put: bbl-state-b-drats
+      put: bosh-state-b-drats
       params:
-        data: bbl-state-b-drats
+        data: bosh-state-updated
     on_failure:
       put: bosh-disaster-recovery-acceptance-tests-prs
       params:
@@ -159,7 +158,7 @@ jobs:
     input_mapping:
       cloud-config: bosh-deployment
       terraform-state: terraform
-      bosh-vars-store: bbl-state-b-drats
+      bosh-vars-store: bosh-state-b-drats
     params:
       CLOUD_CONFIG_PATH: gcp/cloud-config.yml
       BOSH_VARS_STORE_PATH: b-drats-prs/director/creds.yml
@@ -175,7 +174,7 @@ jobs:
     file: bosh-disaster-recovery-acceptance-tests-prs/ci/tasks/update-b-drats-resurrection/task.yml
     input_mapping:
       terraform-state: terraform
-      bosh-vars-store: bbl-state-b-drats
+      bosh-vars-store: bosh-state-b-drats
     params:
       RESURRECTION: "off"
       BOSH_VARS_STORE_PATH: b-drats-prs/director/creds.yml
@@ -211,7 +210,7 @@ jobs:
       params:
         output_statefile: true
     - get: gcs-stemcell
-    - get: bbl-state-b-drats
+    - get: bosh-state-b-drats
   - put: bosh-disaster-recovery-acceptance-tests-prs
     params:
       path: bosh-disaster-recovery-acceptance-tests-prs
@@ -221,7 +220,7 @@ jobs:
     file: bosh-disaster-recovery-acceptance-tests-prs/ci/tasks/extract-b-drats-integration-config/task.yml
     input_mapping:
       terraform-state: terraform
-      bosh-vars-store: bbl-state-b-drats
+      bosh-vars-store: bosh-state-b-drats
       stemcell: gcs-stemcell
     params:
       BOSH_VARS_STORE_PATH: b-drats-prs/director/creds.yml
@@ -239,7 +238,7 @@ jobs:
       JUMPBOX_VARS_STORE_PATH: b-drats-prs/jumpbox/creds.yml
     input_mapping:
       bosh-disaster-recovery-acceptance-tests: bosh-disaster-recovery-acceptance-tests-prs
-      bosh-vars-store: bbl-state-b-drats
+      bosh-vars-store: bosh-state-b-drats
       terraform-state: terraform
     on_failure:
       put: bosh-disaster-recovery-acceptance-tests-prs
@@ -277,11 +276,11 @@ jobs:
     - get: bosh-disaster-recovery-acceptance-tests-prs
       passed: [run-b-drats-prs]
       trigger: true
-    - get: bbl-state-b-drats
+    - get: bosh-state-b-drats
   - task: bosh-delete-env
     file: bosh-disaster-recovery-acceptance-tests-prs/ci/tasks/bosh-operation/task.yml
     input_mapping:
-      bosh-state: bbl-state-b-drats
+      bosh-state: bosh-state-b-drats
       terraform-state: terraform
     params:
       ENVIRONMENT_NAME: "b-drats-prs/director"
@@ -290,9 +289,9 @@ jobs:
       BOSH_OPERATION: "delete-env"
       GCP_SERVICE_ACCOUNT_KEY: ((bosh_director.service_account_key))
     ensure:
-      put: bbl-state-b-drats
+      put: bosh-state-b-drats
       params:
-        data: bbl-state-b-drats
+        data: bosh-state-updated
   - task: jumpbox-delete-env
     file: bosh-disaster-recovery-acceptance-tests-prs/ci/tasks/jumpbox-operation/task.yml
     input_mapping:
@@ -303,12 +302,12 @@ jobs:
       BOSH_OPERATION: "delete-env"
       GCP_SERVICE_ACCOUNT_KEY: ((bosh_director.service_account_key))
     ensure:
-      put: bbl-state-b-drats
+      put: bosh-state-b-drats
       params:
-        data: bbl-state-b-drats
+        data: bosh-state-updated
   - put: terraform
     params:
-      terraform_source: bosh-disaster-recovery-acceptance-tests-prs/ci/terraform/gcp/
+      terraform_source: bosh-disaster-recovery-acceptance-tests-prs/ci/infrastructure/terraform/gcp
       env_name: b-drats-prs
       action: destroy
       vars:

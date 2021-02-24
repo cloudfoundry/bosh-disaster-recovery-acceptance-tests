@@ -19,6 +19,11 @@ tags="[$( terraform_output bosh-open-tag ), $( terraform_output jumpbox-tag )]"
 internal_cidr="$( terraform_output director-subnetwork-cidr-range )"
 project_id="$( terraform_output projectid )"
 
+function populate_updated_bosh_state() {
+  cp -r bosh-state/. bosh-state-updated
+}
+trap populate_updated_bosh_state EXIT
+
 
 (
   cd jumpbox-deployment
