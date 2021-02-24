@@ -30,7 +30,7 @@ bosh --environment "$bosh_host" \
   --client-secret "$bosh_client_secret" \
   --ca-cert "$bosh_ca_cert_path" \
   update-cloud-config \
-  --ops-file bosh-disaster-recovery-acceptance-tests-prs/ci/opsfiles/gcp/cloud-config-jumpbox-reserved-ip.yml \
+  --ops-file bosh-disaster-recovery-acceptance-tests-prs/ci/infrastructure/opsfiles/gcp/cloud-config-jumpbox-reserved-ip.yml \
   --var "internal_cidr=${internal_cidr}" \
   --var "internal_gw=${internal_gw}"\
   --var "zone=${zone}" \
