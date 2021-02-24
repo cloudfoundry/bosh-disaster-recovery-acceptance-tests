@@ -154,7 +154,7 @@ jobs:
         status: failure
         context: b-drats
   - task: update-b-drats-cloud-config
-    file: bosh-disaster-recovery-acceptance-tests-prs/ci//tasks/update-b-drats-cloud-config/task.yml
+    file: bosh-disaster-recovery-acceptance-tests-prs/ci/tasks/update-b-drats-cloud-config/task.yml
     input_mapping:
       cloud-config: bosh-deployment
       terraform-state: terraform
