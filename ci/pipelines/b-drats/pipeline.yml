@@ -1,0 +1,343 @@
+---
+resource_types:
+- name: pull-request
+  type: docker-image
+  source:
+    repository: jtarchie/pr
+    tag: latest
+
+- name: terraform
+  type: docker-image
+  source:
+    repository: ljfranklin/terraform-resource
+
+
+resources:
+- name: bosh-deployment
+  type: git
+  source:
+    branch: master
+    uri: https://github.com/cloudfoundry/bosh-deployment.git
+
+- name: jumpbox-deployment
+  type: git
+  source:
+    branch: master
+    uri: https://github.com/cloudfoundry/jumpbox-deployment.git
+
+- name: bosh-disaster-recovery-acceptance-tests-prs
+  type: pull-request
+  source:
+    repo: cloudfoundry-incubator/bosh-disaster-recovery-acceptance-tests
+    access_token: ((github.access_token))
+
+- name: bosh-backup-and-restore-meta
+  type: git
+  source:
+    uri: git@github.com:pivotal-cf/bosh-backup-and-restore-meta.git
+    private_key: ((github.ssh_key))
+    git_crypt_key: ((github-bbr.crypt_key))
+    branch: master
+
+- name: backup-and-restore-ci
+  type: git
+  source:
+    uri: git@github.com:cloudfoundry-incubator/backup-and-restore-ci.git
+    private_key: ((github.ssh_key))
+    branch: master
+
+- name: bbr-binary-release
+  type: github-release
+  source:
+    owner: cloudfoundry-incubator
+    repository: bosh-backup-and-restore
+    access_token: ((github.access_token))
+
+- name: terraform
+  type: terraform
+  source:
+    backend_type: s3
+    backend_config:
+      bucket: bbr-terraform-states
+      key: terraform-state.tfstate
+      access_key: ((aws_credentials.access_key_id))
+      secret_key: ((aws_credentials.secret_access_key))
+      region: eu-west-1
+
+- name: gcs-stemcell
+  type: bosh-io-stemcell
+  source:
+    name: bosh-google-kvm-ubuntu-xenial-go_agent
+
+
+- name: six-hours
+  type: time
+  source:
+    interval: 6h
+    start: 9:00 AM
+    stop: 5:00 PM
+    days: [Monday, Tuesday, Wednesday, Thursday, Friday]
+
+jobs:
+- name: deploy-b-drats-prs
+  serial: true
+  serial_groups: [prs]
+  plan:
+  - get: six-hours
+    trigger: true
+  - in_parallel:
+    - get: bosh-deployment
+    - get: jumpbox-deployment
+    - get: bosh-disaster-recovery-acceptance-tests-prs
+    - get: bosh-backup-and-restore-meta
+    - get: backup-and-restore-ci
+  - put: bosh-disaster-recovery-acceptance-tests-prs
+    params:
+      path: bosh-disaster-recovery-acceptance-tests-prs
+      status: pending
+      context: b-drats
+  - put: terraform
+    params:
+      terraform_source: bosh-backup-and-restore-meta/terraform/b-drats/gcp/
+      env_name: b-drats-prs
+      delete_on_failure: true
+      vars:
+        environment_name: b-drats-prs
+        gcp_service_account_key: ((terraform.service_account_key))
+    get_params:
+      output_statefile: true
+    on_failure:
+      put: bosh-disaster-recovery-acceptance-tests-prs
+      params:
+        path: bosh-disaster-recovery-acceptance-tests-prs
+        status: failure
+        context: b-drats
+  - task: jumpbox-create-env
+    file: backup-and-restore-ci/tasks/jumpbox-operation/task.yml
+    input_mapping:
+      bosh-state: bosh-backup-and-restore-meta
+      terraform-state: terraform
+    params:
+      ENVIRONMENT_NAME: "b-drats-prs/jumpbox"
+      BOSH_OPERATION: "create-env"
+      GCP_SERVICE_ACCOUNT_KEY: ((bosh_director.service_account_key))
+    ensure:
+      put: bosh-backup-and-restore-meta
+      params:
+        repository: bosh-state-updated
+        rebase: true
+    on_failure:
+      put: bosh-disaster-recovery-acceptance-tests-prs
+      params:
+        path: bosh-disaster-recovery-acceptance-tests-prs
+        status: failure
+        context: b-drats
+  - task: bosh-create-env
+    file: backup-and-restore-ci/tasks/bosh-operation/task.yml
+    input_mapping:
+      bosh-state: bosh-state-updated
+      opsfiles: bosh-backup-and-restore-meta
+      terraform-state: terraform
+    params:
+      ENVIRONMENT_NAME: "b-drats-prs/director"
+      JUMPBOX_ENVIRONMENT_NAME: "b-drats-prs/jumpbox"
+      DIRECTOR_NAME: "b-drats-prs"
+      BOSH_OPERATION: "create-env"
+      GCP_SERVICE_ACCOUNT_KEY: ((bosh_director.service_account_key))
+    ensure:
+      put: bosh-backup-and-restore-meta
+      params:
+        repository: bosh-state-updated
+        rebase: true
+    on_failure:
+      put: bosh-disaster-recovery-acceptance-tests-prs
+      params:
+        path: bosh-disaster-recovery-acceptance-tests-prs
+        status: failure
+        context: b-drats
+  - task: update-b-drats-cloud-config
+    file: backup-and-restore-ci/tasks/update-b-drats-cloud-config/task.yml
+    input_mapping:
+      cloud-config: bosh-deployment
+      terraform-state: terraform
+      bosh-vars-store: bosh-state-updated
+      opsfiles: bosh-backup-and-restore-meta
+    params:
+      CLOUD_CONFIG_PATH: gcp/cloud-config.yml
+      BOSH_VARS_STORE_PATH: b-drats-prs/director/creds.yml
+      BOSH_CLIENT: admin
+      JUMPBOX_VARS_STORE_PATH: b-drats-prs/jumpbox/creds.yml
+    on_failure:
+      put: bosh-disaster-recovery-acceptance-tests-prs
+      params:
+        path: bosh-disaster-recovery-acceptance-tests-prs
+        status: failure
+        context: b-drats
+  - task: update-b-drats-resurrection
+    file: backup-and-restore-ci/tasks/update-b-drats-resurrection/task.yml
+    input_mapping:
+      terraform-state: terraform
+      bosh-vars-store: bosh-state-updated
+    params:
+      RESURRECTION: "off"
+      BOSH_VARS_STORE_PATH: b-drats-prs/director/creds.yml
+      JUMPBOX_VARS_STORE_PATH: b-drats-prs/jumpbox/creds.yml
+      BOSH_CLIENT: admin
+    on_failure:
+      put: bosh-disaster-recovery-acceptance-tests-prs
+      params:
+        path: bosh-disaster-recovery-acceptance-tests-prs
+        status: failure
+        context: b-drats
+
+- name: run-b-drats-prs
+  serial: true
+  serial_groups: [prs]
+  plan:
+  - get: six-hours
+    passed:
+    - deploy-b-drats-prs
+  - in_parallel:
+    - get: bosh-disaster-recovery-acceptance-tests-prs
+      passed: [deploy-b-drats-prs]
+      trigger: true
+    - get: bosh-deployment
+      passed: [deploy-b-drats-prs]
+      trigger: true
+    - get: jumpbox-deployment
+      passed: [deploy-b-drats-prs]
+    - get: bbr-binary-release
+      trigger: true
+    - get: bosh-backup-and-restore-meta
+    - get: backup-and-restore-ci
+    - get: terraform
+      passed: [deploy-b-drats-prs]
+      params:
+        output_statefile: true
+    - get: gcs-stemcell
+  - put: bosh-disaster-recovery-acceptance-tests-prs
+    params:
+      path: bosh-disaster-recovery-acceptance-tests-prs
+      status: pending
+      context: b-drats
+  - task: extract-b-drats-integration-config
+    file: backup-and-restore-ci/tasks/extract-b-drats-integration-config/task.yml
+    input_mapping:
+      terraform-state: terraform
+      bosh-vars-store: bosh-backup-and-restore-meta
+      stemcell: gcs-stemcell
+    params:
+      BOSH_VARS_STORE_PATH: b-drats-prs/director/creds.yml
+      CREDHUB_SERVER: https://10.0.0.6:8844
+    on_failure:
+      put: bosh-disaster-recovery-acceptance-tests-prs
+      params:
+        path: bosh-disaster-recovery-acceptance-tests-prs
+        status: failure
+        context: b-drats
+  - task: run-b-drats
+    privileged: true
+    file: bosh-disaster-recovery-acceptance-tests-prs/ci/tasks/run-b-drats/task.yml
+    params:
+      JUMPBOX_VARS_STORE_PATH: b-drats-prs/jumpbox/creds.yml
+    input_mapping:
+      bosh-disaster-recovery-acceptance-tests: bosh-disaster-recovery-acceptance-tests-prs
+      bosh-vars-store: bosh-backup-and-restore-meta
+      terraform-state: terraform
+    on_failure:
+      put: bosh-disaster-recovery-acceptance-tests-prs
+      params:
+        path: bosh-disaster-recovery-acceptance-tests-prs
+        status: failure
+        context: b-drats
+    on_success:
+      put: bosh-disaster-recovery-acceptance-tests-prs
+      params:
+        path: bosh-disaster-recovery-acceptance-tests-prs
+        status: success
+        context: b-drats
+
+- name: destroy-b-drats-prs
+  serial: true
+  serial_groups: [prs]
+  plan:
+  - get: six-hours
+    passed:
+      - run-b-drats-prs
+  - in_parallel:
+    - get: bosh-deployment
+      passed: [run-b-drats-prs]
+      trigger: true
+    - get: jumpbox-deployment
+      passed: [run-b-drats-prs]
+    - get: bosh-backup-and-restore-meta
+    - get: backup-and-restore-ci
+    - get: terraform
+      passed: [run-b-drats-prs]
+      params:
+        output_statefile: true
+    - get: bbr-binary-release
+      trigger: true
+      passed: [run-b-drats-prs]
+    - get: bosh-disaster-recovery-acceptance-tests-prs
+      passed: [run-b-drats-prs]
+      trigger: true
+  - task: bosh-delete-env
+    file: backup-and-restore-ci/tasks/bosh-operation/task.yml
+    input_mapping:
+      bosh-state: bosh-backup-and-restore-meta
+      opsfiles: bosh-backup-and-restore-meta
+      terraform-state: terraform
+    params:
+      ENVIRONMENT_NAME: "b-drats-prs/director"
+      JUMPBOX_ENVIRONMENT_NAME: "b-drats-prs/jumpbox"
+      DIRECTOR_NAME: "b-drats-prs"
+      BOSH_OPERATION: "delete-env"
+      GCP_SERVICE_ACCOUNT_KEY: ((bosh_director.service_account_key))
+    ensure:
+      put: bosh-backup-and-restore-meta
+      params:
+        repository: bosh-state-updated
+        rebase: true
+    on_failure:
+      put: bosh-disaster-recovery-acceptance-tests-prs
+      params:
+        path: bosh-disaster-recovery-acceptance-tests-prs
+        status: failure
+        context: b-drats
+  - task: jumpbox-delete-env
+    file: backup-and-restore-ci/tasks/jumpbox-operation/task.yml
+    input_mapping:
+      bosh-state: bosh-state-updated
+      terraform-state: terraform
+    params:
+      ENVIRONMENT_NAME: "b-drats-prs/jumpbox"
+      BOSH_OPERATION: "delete-env"
+      GCP_SERVICE_ACCOUNT_KEY: ((bosh_director.service_account_key))
+    ensure:
+      put: bosh-backup-and-restore-meta
+      params:
+        repository: bosh-state-updated
+        rebase: true
+    on_failure:
+      put: bosh-disaster-recovery-acceptance-tests-prs
+      params:
+        path: bosh-disaster-recovery-acceptance-tests-prs
+        status: failure
+        context: b-drats
+  - put: terraform
+    params:
+      terraform_source: bosh-backup-and-restore-meta/terraform/b-drats/gcp/
+      env_name: b-drats-prs
+      action: destroy
+      vars:
+        environment_name: b-drats-prs
+        gcp_service_account_key: ((terraform.service_account_key))
+    get_params:
+      action: destroy
+    on_failure:
+      put: bosh-disaster-recovery-acceptance-tests-prs
+      params:
+        path: bosh-disaster-recovery-acceptance-tests-prs
+        status: failure
+        context: b-drats
