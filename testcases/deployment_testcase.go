@@ -85,15 +85,20 @@ func (t DeploymentTestcase) AfterRestore(config Config) {
 	})
 
 	By("validate deployment instances are back", func() {
-		session := RunBoshCommandSuccessfullyWithFailureMessage("bosh get sdk instances",
-			config,
-			"-n",
-			"-d",
-			"small-deployment",
-			"instances",
-		)
-		Expect(string(session.Out.Contents())).To(MatchRegexp("small-job/[a-z0-9-]+[ \t]+running"))
+
+		Eventually(getInstances("small-deployment", config)).Should(MatchRegexp("small-job/[a-z0-9-]+[ \t]+running"))
 	})
+}
+
+func getInstances(deployment string, config Config) string {
+	session := RunBoshCommandSuccessfullyWithFailureMessage("bosh get sdk instances",
+		config,
+		"-n",
+		"-d",
+		deployment,
+		"instances",
+	)
+	return string(session.Out.Contents())
 }
 
 func (t DeploymentTestcase) Cleanup(config Config) {
