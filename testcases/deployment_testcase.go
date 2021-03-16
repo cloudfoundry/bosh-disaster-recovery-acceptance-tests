@@ -96,6 +96,7 @@ func (t DeploymentTestcase) AfterRestore(config Config) {
 				break
 			} else {
 				retries += 1
+				fmt.Printf("Get instances retry attempt %v\n", retries)
 				time.Sleep(time.Duration(retries * 10) * time.Second)
 			}
 		}
