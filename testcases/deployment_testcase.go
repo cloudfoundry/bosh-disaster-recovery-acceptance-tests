@@ -2,6 +2,8 @@ package testcases
 
 import (
 	"fmt"
+	"strings"
+	"time"
 
 	"github.com/cloudfoundry-incubator/bosh-disaster-recovery-acceptance-tests/fixtures"
 	. "github.com/cloudfoundry-incubator/bosh-disaster-recovery-acceptance-tests/runner"
@@ -86,7 +88,19 @@ func (t DeploymentTestcase) AfterRestore(config Config) {
 
 	By("validate deployment instances are back", func() {
 
-		Eventually(getInstances("small-deployment", config)).Should(MatchRegexp("small-job/[a-z0-9-]+[ \t]+running"))
+		instanceState := getInstances("small-deployment", config)
+
+		retries := 0
+		for retries < 3{
+			if strings.Contains(instanceState, "running"){
+				break
+			} else {
+				retries += 1
+				time.Sleep(time.Duration(retries * 10) * time.Second)
+			}
+		}
+
+		Expect(instanceState).To(MatchRegexp("small-job/[a-z0-9-]+[ \t]+running"))
 	})
 }
 
