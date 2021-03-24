@@ -8,7 +8,7 @@ variable "gcp_service_account_key" {
 
 variable "projectid" {
   type = "string"
-  default = "cf-backup-and-restore"
+  default = "mapbu-cryogenics"
 }
 
 variable "region" {
