@@ -57,8 +57,6 @@ resources:
       bucket: bbr-terraform-states
       prefix: terraform-state.tfstate
       credentials: ((gcp/service_accounts/bucket_owner.json_key))
-      # access_key: ((aws_credentials.access_key_id))
-      # secret_key: ((aws_credentials.secret_access_key))
 
 - name: gcs-stemcell
   type: bosh-io-stemcell
@@ -79,6 +77,7 @@ resources:
   source:
     <<: *vault_creds
     path: /concourse/common/infrastructure/bosh/b-drats
+    tarball: true
 
 jobs:
 - name: deploy-b-drats-prs
