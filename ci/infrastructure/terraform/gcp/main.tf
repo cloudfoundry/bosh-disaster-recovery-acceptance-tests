@@ -1,23 +1,23 @@
 variable "environment_name" {
-  type = "string"
+  type = string
 }
 
 variable "gcp_service_account_key" {
-	type = "string"
+	type = string
 }
 
 variable "projectid" {
-  type = "string"
+  type = string
   default = "mapbu-cryogenics"
 }
 
 variable "region" {
-  type = "string"
+  type = string
   default = "europe-west1"
 }
 
 variable "zone1" {
-  type = "string"
+  type = string
   default = "europe-west1-b"
 }
 
