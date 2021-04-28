@@ -90,7 +90,6 @@ func (t DeploymentTestcase) AfterRestore(config Config) {
 		instanceState := getInstances("small-deployment", config)
 
 		for retries := 1; !isRunning(instanceState) && retries <= 3; retries++ {
-			instanceState = getInstances("small-deployment", config)
 			fmt.Printf("Get instances retry attempt %v\n", retries)
 			time.Sleep(time.Duration(retries*30) * time.Second)
 		}
