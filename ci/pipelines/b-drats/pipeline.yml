@@ -22,7 +22,6 @@ resource_types:
     repository: wfernandes/vault-resource
     tag: latest
 
-
 resources:
 - name: bosh-deployment
   type: git
@@ -63,7 +62,6 @@ resources:
   source:
     name: bosh-google-kvm-ubuntu-xenial-go_agent
 
-
 - name: six-hours
   type: time
   source:
@@ -103,7 +101,7 @@ jobs:
       delete_on_failure: true
       vars:
         environment_name: b-drats-prs
-        gcp_service_account_key: ((terraform.service_account_key))
+        gcp_service_account_key: ((gcp/service_accounts/infrastructure.json_key))
     get_params:
       output_statefile: true
     on_failure:
@@ -120,7 +118,7 @@ jobs:
     params:
       ENVIRONMENT_NAME: "b-drats-prs/jumpbox"
       BOSH_OPERATION: "create-env"
-      GCP_SERVICE_ACCOUNT_KEY: ((bosh_director.service_account_key))
+      GCP_SERVICE_ACCOUNT_KEY: ((bosh_director.json_key))
     ensure:
       put: bosh-state-b-drats
       params:
@@ -141,7 +139,7 @@ jobs:
       JUMPBOX_ENVIRONMENT_NAME: "b-drats-prs/jumpbox"
       DIRECTOR_NAME: "b-drats-prs"
       BOSH_OPERATION: "create-env"
-      GCP_SERVICE_ACCOUNT_KEY: ((bosh_director.service_account_key))
+      GCP_SERVICE_ACCOUNT_KEY: ((bosh_director.json_key))
     ensure:
       put: bosh-state-b-drats
       params:
