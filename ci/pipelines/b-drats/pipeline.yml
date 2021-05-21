@@ -284,7 +284,7 @@ jobs:
       JUMPBOX_ENVIRONMENT_NAME: "b-drats-prs/jumpbox"
       DIRECTOR_NAME: "b-drats-prs"
       BOSH_OPERATION: "delete-env"
-      GCP_SERVICE_ACCOUNT_KEY: ((bosh_director.service_account_key))
+      GCP_SERVICE_ACCOUNT_KEY: ((bosh_director.json_key))
     ensure:
       put: bosh-state-b-drats
       params:
@@ -297,7 +297,7 @@ jobs:
     params:
       ENVIRONMENT_NAME: "b-drats-prs/jumpbox"
       BOSH_OPERATION: "delete-env"
-      GCP_SERVICE_ACCOUNT_KEY: ((bosh_director.service_account_key))
+      GCP_SERVICE_ACCOUNT_KEY: ((bosh_director.json_key))
     ensure:
       put: bosh-state-b-drats
       params:
@@ -309,6 +309,6 @@ jobs:
       action: destroy
       vars:
         environment_name: b-drats-prs
-        gcp_service_account_key: ((terraform.service_account_key))
+        gcp_service_account_key: ((gcp/service_accounts/infrastructure.json_key))
     get_params:
       action: destroy
