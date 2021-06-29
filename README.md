@@ -8,7 +8,6 @@ The test runner provides hooks around `bbr director backup` and `bbr director re
 
 1. Install [Golang](https://golang.org/doc/install)
 1. Install [`ginkgo` CLI](https://github.com/onsi/ginkgo#set-me-up)
-1. Install [`dep` dependency management tool](https://github.com/golang/dep#installation)
 1. Download [`bbr` CLI](https://github.com/cloudfoundry-incubator/bosh-backup-and-restore/releases)
 
 ## Running B-DRATs in your pipelines
