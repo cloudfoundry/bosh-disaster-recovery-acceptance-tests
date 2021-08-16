@@ -89,6 +89,7 @@ jobs:
     - get: jumpbox-deployment
     - get: bosh-disaster-recovery-acceptance-tests-prs
       trigger: true
+      version: every
     - get: bosh-state-b-drats
   - put: bosh-disaster-recovery-acceptance-tests-prs
     params:
@@ -196,6 +197,7 @@ jobs:
     - get: bosh-disaster-recovery-acceptance-tests-prs
       passed: [deploy-b-drats-prs]
       trigger: true
+      version: every
     - get: bosh-deployment
       passed: [deploy-b-drats-prs]
       trigger: true
@@ -274,6 +276,7 @@ jobs:
     - get: bosh-disaster-recovery-acceptance-tests-prs
       passed: [run-b-drats-prs]
       trigger: true
+      version: every
     - get: bosh-state-b-drats
   - task: bosh-delete-env
     file: bosh-disaster-recovery-acceptance-tests-prs/ci/tasks/bosh-operation/task.yml
