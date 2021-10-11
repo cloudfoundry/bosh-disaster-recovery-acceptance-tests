@@ -4,7 +4,7 @@ platform: linux
 image_resource:
   type: registry-image
   source: 
-    repository: docker pull harbor-repo.vmware.com/dockerhub-proxy-cache/pcfplatformrecovery/backup-and-restore:latest
+    repository: docker pull harbor-repo.vmware.com/dockerhub-proxy-cache/pcfplatformrecovery/backup-and-restore
     tag: latest
 
 inputs:
