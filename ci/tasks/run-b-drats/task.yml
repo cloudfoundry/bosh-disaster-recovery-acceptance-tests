@@ -5,6 +5,7 @@ image_resource:
   type: docker-image
   source: 
     repository: hub.docker.com/r/pcfplatformrecovery/backup-and-restore
+    tag: 0.14.2
 
 inputs:
 - name: bosh-disaster-recovery-acceptance-tests
