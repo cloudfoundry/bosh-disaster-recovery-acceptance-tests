@@ -15,6 +15,8 @@ ssh-add "$jumpbox_private_key"
 sshuttle -r "${JUMPBOX_USER}@${JUMPBOX_IP}" "10.0.0.0/16" -D --pidfile=sshuttle.pid -e "ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -o ServerAliveInterval=${SSH_ALIVE_INTERVAL}"
 sshuttle_pid="$( cat sshuttle.pid )"
 
+trap 'kill ${SSH_AGENT_PID}' EXIT
+
 sleep 5
 
 if ! stat sshuttle.pid > /dev/null 2>&1; then
