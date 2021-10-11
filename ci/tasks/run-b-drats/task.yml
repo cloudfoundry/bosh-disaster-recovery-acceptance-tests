@@ -17,7 +17,7 @@ inputs:
 params:
   JUMPBOX_VARS_STORE_PATH:
   JUMPBOX_IP:
-  JUMPBOX_KEY:
+  JUMPBOX_PRIVATE_KEY:
   JUMPBOX_USER:
   INTEGRATION_CONFIG_PATH: integration_config.json # JSON file in b-drats-integration-config resource
   SSH_ALIVE_INTERVAL: 30
