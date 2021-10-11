@@ -22,14 +22,17 @@ if ! stat sshuttle.pid > /dev/null 2>&1; then
   exit 1
 fi
 
-trap "kill ${sshuttle_pid}" EXIT
+trap 'kill ${sshuttle_pid}' EXIT
 
-export BBR_BINARY_PATH="$( pwd )/$( ls bbr-binary-release/bbr-1*-linux-amd64 )"
+BBR_BINARY_PATH="${PWD}/$( ls bbr-binary-release/bbr-1*-linux-amd64 )"
 chmod +x "$BBR_BINARY_PATH"
+export BBR_BINARY_PATH
 
-export GOPATH="$( pwd )"
-export PATH="${PATH}:${GOPATH}/bin"
-export INTEGRATION_CONFIG_PATH="$( pwd )/b-drats-integration-config/${INTEGRATION_CONFIG_PATH}"
+GOPATH="$( pwd )"
+PATH="${PATH}:${GOPATH}/bin"
+INTEGRATION_CONFIG_PATH="$( pwd )/b-drats-integration-config/${INTEGRATION_CONFIG_PATH}"
+
+export GOPATH PATH INTEGRATION_CONFIG_PATH
 
 ./bosh-disaster-recovery-acceptance-tests/scripts/_run_acceptance_tests.sh
 
