@@ -4,7 +4,7 @@ platform: linux
 image_resource:
   type: docker-image
   source: 
-    repository: docker pull harbor-repo.vmware.com/dockerhub-proxy-cache/pcfplatformrecovery/backup-and-restore
+    repository: harbor-repo.vmware.com/dockerhub-proxy-cache/pcfplatformrecovery/backup-and-restore
     tag: latest
 
 inputs:
