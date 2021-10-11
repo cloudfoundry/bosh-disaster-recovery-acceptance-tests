@@ -2,10 +2,10 @@
 platform: linux
 
 image_resource:
-  type: docker-image
+  type: registry-image
   source: 
     repository: hub.docker.com/r/pcfplatformrecovery/backup-and-restore
-    tag: 0.14.2
+    tag: latest
 
 inputs:
 - name: bosh-disaster-recovery-acceptance-tests
