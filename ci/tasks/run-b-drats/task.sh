@@ -7,7 +7,7 @@ set -eu
 : "${JUMPBOX_USER:=jumpbox}"
 
 jumpbox_private_key="$( mktemp )"
-echo -e $JUMPBOX_PRIVATE_KEY | sed -e 's/^"//' -e 's/"$//' > "$jumpbox_private_key"
+echo -e "$JUMPBOX_PRIVATE_KEY" | sed -e 's/^"//' -e 's/"$//' > "$jumpbox_private_key"
 chmod 600 "$jumpbox_private_key"
 
 eval "$( ssh-agent )"
