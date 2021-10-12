@@ -20,9 +20,10 @@ params:
   JUMPBOX_VARS_STORE_PATH:
   JUMPBOX_IP:
   JUMPBOX_PRIVATE_KEY:
-  JUMPBOX_USER:
+  JUMPBOX_USER: jumpbox
   INTEGRATION_CONFIG_PATH: integration_config.json # JSON file in b-drats-integration-config resource
   SSH_ALIVE_INTERVAL: 30
+  BBR_BINARY_PATH: bbr-binary-release/bbr-*-linux-amd64
 
 run:
   path: bosh-disaster-recovery-acceptance-tests/ci/tasks/run-b-drats/task.sh
