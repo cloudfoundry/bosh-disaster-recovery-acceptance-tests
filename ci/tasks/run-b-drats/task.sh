@@ -33,8 +33,8 @@ INTEGRATION_CONFIG_PATH="$PWD/b-drats-integration-config/${INTEGRATION_CONFIG_PA
 
 export GOPATH PATH INTEGRATION_CONFIG_PATH 
 
-chmod +x "$BBR_BINARY_PATH"
 BBR_BINARY_PATH="${PWD}/${BBR_BINARY}"
+chmod +x "$BBR_BINARY_PATH"
 export BBR_BINARY_PATH
 
 ./bosh-disaster-recovery-acceptance-tests/scripts/_run_acceptance_tests.sh
