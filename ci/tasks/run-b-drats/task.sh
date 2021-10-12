@@ -4,7 +4,7 @@ set -eu
 
 : "${JUMPBOX_IP:="$( terraform output -state terraform-state/terraform.tfstate jumpbox-ip | jq -r .)"}"
 : "${JUMPBOX_PRIVATE_KEY:="$( bosh interpolate --path /jumpbox_ssh/private_key "bosh-vars-store/${JUMPBOX_VARS_STORE_PATH}" )"}"
-: "${JUMPBOX_USER:=jumpbox}"
+: "${JUMPBOX_USER:?}"
 
 jumpbox_private_key="$( mktemp )"
 echo -e "$JUMPBOX_PRIVATE_KEY" | sed -e 's/^"//' -e 's/"$//' > "$jumpbox_private_key"
