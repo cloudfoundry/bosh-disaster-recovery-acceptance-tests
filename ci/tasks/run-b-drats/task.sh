@@ -5,6 +5,10 @@ set -eu
 : "${JUMPBOX_IP:="$( terraform output -state terraform-state/terraform.tfstate jumpbox-ip | jq -r .)"}"
 : "${JUMPBOX_PRIVATE_KEY:="$( bosh interpolate --path /jumpbox_ssh/private_key "bosh-vars-store/${JUMPBOX_VARS_STORE_PATH}" )"}"
 : "${JUMPBOX_USER:?}"
+: "${BBR_BINARY:?}"
+
+chmod +x "$BBR_BINARY"
+export BBR_BINARY
 
 jumpbox_private_key="$( mktemp )"
 echo -e "$JUMPBOX_PRIVATE_KEY" | sed -e 's/^"//' -e 's/"$//' > "$jumpbox_private_key"
@@ -26,15 +30,12 @@ fi
 
 trap 'kill ${sshuttle_pid}' EXIT
 
-BBR_BINARY_PATH="${PWD}/$( ls bbr-binary-release/bbr-1*-linux-amd64 )"
-chmod +x "$BBR_BINARY_PATH"
-export BBR_BINARY_PATH
 
 GOPATH="$( pwd )"
 PATH="${PATH}:${GOPATH}/bin"
 INTEGRATION_CONFIG_PATH="$( pwd )/b-drats-integration-config/${INTEGRATION_CONFIG_PATH}"
 
-export GOPATH PATH INTEGRATION_CONFIG_PATH
+export GOPATH PATH INTEGRATION_CONFIG_PATH 
 
 ./bosh-disaster-recovery-acceptance-tests/scripts/_run_acceptance_tests.sh
 
