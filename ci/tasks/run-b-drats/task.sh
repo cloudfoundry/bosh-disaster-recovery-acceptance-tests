@@ -33,7 +33,8 @@ INTEGRATION_CONFIG_PATH="$PWD/b-drats-integration-config/${INTEGRATION_CONFIG_PA
 
 export GOPATH PATH INTEGRATION_CONFIG_PATH 
 
-BBR_BINARY_PATH="$(ls "${PWD}/${BBR_BINARY}")"
+# shellcheck disable=SC2086
+BBR_BINARY_PATH="$(ls ${PWD}/${BBR_BINARY})"
 chmod +x "$BBR_BINARY_PATH"
 export BBR_BINARY_PATH
 
