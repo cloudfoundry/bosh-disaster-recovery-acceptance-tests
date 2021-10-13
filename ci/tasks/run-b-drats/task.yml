@@ -3,21 +3,27 @@ platform: linux
 
 image_resource:
   type: registry-image
-  source: {repository: pcfplatformrecovery/backup-and-restore}
+  source:
+    repository: pcfplatformrecovery/backup-and-restore
+    tag: latest
 
 inputs:
-- name: bosh-disaster-recovery-acceptance-tests-prs
 - name: bosh-disaster-recovery-acceptance-tests
-  path: src/github.com/cloudfoundry-incubator/bosh-disaster-recovery-acceptance-tests
 - name: bbr-binary-release
 - name: b-drats-integration-config
 - name: bosh-vars-store
+  optional: true
 - name: terraform-state
+  optional: true
 
 params:
   JUMPBOX_VARS_STORE_PATH:
+  JUMPBOX_IP:
+  JUMPBOX_PRIVATE_KEY:
+  JUMPBOX_USER: jumpbox
   INTEGRATION_CONFIG_PATH: integration_config.json # JSON file in b-drats-integration-config resource
   SSH_ALIVE_INTERVAL: 30
+  BBR_BINARY: bbr-binary-release/bbr-[0-9]*-linux-amd64
 
 run:
-  path: bosh-disaster-recovery-acceptance-tests-prs/ci/tasks/run-b-drats/task.sh
+  path: bosh-disaster-recovery-acceptance-tests/ci/tasks/run-b-drats/task.sh

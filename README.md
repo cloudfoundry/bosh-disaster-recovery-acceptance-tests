@@ -12,9 +12,9 @@ The test runner provides hooks around `bbr director backup` and `bbr director re
 
 ## Running B-DRATs in your pipelines
 
-We encourage you to use our [`run-b-drats` CI task](https://github.com/cloudfoundry-incubator/bosh-disaster-recovery-acceptance-tests/tree/master/ci/run-b-drats) to run B-DRATS in your Concourse pipeline.
+We encourage you to use our [`run-b-drats` CI task](ci/tasks/run-b-drats) to run B-DRATS in your Concourse pipeline.
 
-Please refer to our b-drats [pipeline definition](https://github.com/cloudfoundry-incubator/backup-and-restore-ci/blob/master/pipelines/b-drats/pipeline.yml) for a working example.
+Please refer to our b-drats [pipeline definition](ci/pipelines/b-drats/pipeline.yml) for a working example.
 
 ## Running B-DRATs locally
 
@@ -73,7 +73,7 @@ B-DRATS runs a collection of test cases against a bosh director.
 
 Test cases should be used for checking that BOSH director components' data has been backed up and restored correctly. For example, if your release backs up a database during `bbr director backup`, and the database is altered after taking the backup. Then after a successful `bbr director restore`, the content of the database will be restored to its original state.
 
-To add extra test cases, create a new test case that implements the [`TestCase` interface](https://github.com/cloudfoundry-incubator/bosh-disaster-recovery-acceptance-tests/blob/master/runner/testcase.go).
+To add extra test cases, create a new test case that implements the [`TestCase` interface](runner/testcase.go).
 
 The methods that need to be implemented are:
 * `Name() string` - should return name of the test case.
@@ -86,6 +86,6 @@ The methods that need to be implemented are:
 
 ### Creating a new test case
 
-1. Create a new test case in the [testcases package](https://github.com/cloudfoundry-incubator/bosh-disaster-recovery-acceptance-tests/tree/master/testcases).
-1. Add the newly created test case to `[]runner.TestCase` in [`acceptance_test.go`](https://github.com/cloudfoundry-incubator/bosh-disaster-recovery-acceptance-tests/blob/master/acceptance/acceptance_test.go).
+1. Create a new test case in the [testcases package](testcases).
+1. Add the newly created test case to `[]runner.TestCase` in [`acceptance_test.go`](acceptance/acceptance_test.go).
 
