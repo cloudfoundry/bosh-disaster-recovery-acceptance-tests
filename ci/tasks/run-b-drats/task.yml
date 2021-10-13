@@ -5,6 +5,7 @@ image_resource:
   type: registry-image
   source:
     repository: pcfplatformrecovery/backup-and-restore
+    tag: latest
 
 inputs:
 - name: bosh-disaster-recovery-acceptance-tests
