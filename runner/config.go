@@ -54,7 +54,7 @@ func NewConfig(integrationConfig acceptance.IntegrationConfig, bbrBinaryPath, ar
 		timeout = time.Duration(integrationConfig.TimeoutMinutes) * time.Minute
 	}
 
-	defaultVMType := "large.cpu"
+	defaultVMType := "default"
 	if integrationConfig.DeploymentVMType != "" {
 		defaultVMType = integrationConfig.DeploymentVMType
 	}
