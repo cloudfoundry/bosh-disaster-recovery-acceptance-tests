@@ -52,7 +52,11 @@ resources:
   source:
     api_token: ((toolsmiths.api_token))
     hostname: environments.toolsmiths.cf-app.com
+<<<<<<< HEAD
     pool_name: #@ data.values.tas_versions[-1]["pool_name"]
+=======
+    pool_name: cryo_2_11_lts2
+>>>>>>> dd92e5b ([ci] use pooled env instead of building our own)
 
 - name: bosh-disaster-recovery-acceptance-tests-prs
   icon: source-pull
@@ -146,7 +150,10 @@ jobs:
     trigger: true
     passed:
       - run-b-drats
+<<<<<<< HEAD
   - put: bosh-disaster-recovery-acceptance-tests-prs
+=======
+>>>>>>> dd92e5b ([ci] use pooled env instead of building our own)
     params:
       merge: true
 
