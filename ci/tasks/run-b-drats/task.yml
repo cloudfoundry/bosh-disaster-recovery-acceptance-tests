@@ -22,7 +22,7 @@ params:
   JUMPBOX_PRIVATE_KEY:
   JUMPBOX_USER: jumpbox
   INTEGRATION_CONFIG_PATH: integration_config.json # JSON file in b-drats-integration-config resource
-  SSH_ALIVE_INTERVAL: 30
+  SSH_ALIVE_INTERVAL: 30 # in seconds
   BBR_BINARY: bbr-binary-release/bbr-[0-9]*-linux-amd64
 
 run:
