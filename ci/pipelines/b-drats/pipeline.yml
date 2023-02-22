@@ -139,6 +139,7 @@ jobs:
     trigger: true
     passed:
       - run-b-drats
+  - put: bosh-disaster-recovery-acceptance-tests-prs
     params:
       merge: true
 
