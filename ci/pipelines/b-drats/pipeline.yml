@@ -1,4 +1,11 @@
 ---
+#!  WARNING: this pipeline is automatically set and manual changes will go away. 
+#!
+#!  To set pipeline manually run: 
+#!    fly set-pipeline -p b-drats -c <(ytt -f ci/pipelines/b-drats/pipeline.yml --data-values-file ci/pipelines/b-drats/values.yml)
+
+#@ load("@ytt:data", "data")
+
 vault_creds: &vault_creds
   url: ((vault/server.url))
   role_id: ((vault/resource_credentials.role_id))
@@ -45,7 +52,7 @@ resources:
   source:
     api_token: ((toolsmiths.api_token))
     hostname: environments.toolsmiths.cf-app.com
-    pool_name: cryo_2_11_lts2
+    pool_name: #@ data.values.tas_versions[-1]["pool_name"]
 
 - name: bosh-disaster-recovery-acceptance-tests-prs
   icon: source-pull
@@ -101,7 +108,7 @@ jobs:
         INCLUDE_DEPLOYMENT_TESTCASE: true
         INCLUDE_TRUNCATE_DB_BLOBSTORE_TESTCASE: true
         INCLUDE_CREDHUB_TESTCASE: true
-        TIMEOUT_IN_MINUTES: 2_880 # 48h
+        TIMEOUT_IN_MINUTES: 2_880 #! 48h
       output_mapping:
         config: b-drats-config
     - load_var: env-metadata
@@ -115,7 +122,7 @@ jobs:
       JUMPBOX_PRIVATE_KEY: ((.:env-metadata.ops_manager_private_key))
       JUMPBOX_USER: ubuntu
       BBR_BINARY: bbr-binary-release/releases/bbr
-      SSH_ALIVE_INTERVAL: 60 # in seconds
+      SSH_ALIVE_INTERVAL: 60 #! in seconds
     input_mapping:
       bbr-binary-release: bbr-artefacts
       bosh-disaster-recovery-acceptance-tests: bosh-disaster-recovery-acceptance-tests-prs
