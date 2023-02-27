@@ -52,11 +52,7 @@ resources:
   source:
     api_token: ((toolsmiths.api_token))
     hostname: environments.toolsmiths.cf-app.com
-<<<<<<< HEAD
     pool_name: #@ data.values.tas_versions[-1]["pool_name"]
-=======
-    pool_name: cryo_2_11_lts2
->>>>>>> dd92e5b ([ci] use pooled env instead of building our own)
 
 - name: bosh-disaster-recovery-acceptance-tests-prs
   icon: source-pull
@@ -127,6 +123,7 @@ jobs:
       JUMPBOX_USER: ubuntu
       BBR_BINARY: bbr-binary-release/releases/bbr
       SSH_ALIVE_INTERVAL: 60 #! in seconds
+      GINKGO_TIMEOUT: 48h0m0s #! 48h to be consistent with TIMEOUT_IN_MINUTES in the b-drats test config from the previous task.
     input_mapping:
       bbr-binary-release: bbr-artefacts
       bosh-disaster-recovery-acceptance-tests: bosh-disaster-recovery-acceptance-tests-prs
@@ -150,10 +147,7 @@ jobs:
     trigger: true
     passed:
       - run-b-drats
-<<<<<<< HEAD
   - put: bosh-disaster-recovery-acceptance-tests-prs
-=======
->>>>>>> dd92e5b ([ci] use pooled env instead of building our own)
     params:
       merge: true
 
