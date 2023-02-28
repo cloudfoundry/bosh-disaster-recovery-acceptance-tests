@@ -6,6 +6,9 @@ set -eu
 : "${JUMPBOX_PRIVATE_KEY:="$( bosh interpolate --path /jumpbox_ssh/private_key "bosh-vars-store/${JUMPBOX_VARS_STORE_PATH}" )"}"
 : "${JUMPBOX_USER:?}"
 : "${BBR_BINARY:?}"
+: "${GINKGO_TIMEOUT:?}"
+
+export GINKGO_TIMEOUT
 
 jumpbox_private_key="$( mktemp )"
 echo -e "$JUMPBOX_PRIVATE_KEY" | sed -e 's/^"//' -e 's/"$//' > "$jumpbox_private_key"
