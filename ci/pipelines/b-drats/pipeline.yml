@@ -11,6 +11,8 @@ vault_creds: &vault_creds
   role_id: ((vault/resource_credentials.role_id))
   secret_id: ((vault/resource_credentials.secret_id))
 
+attempts: &number_of_retries 2
+
 resource_types:
 - name: pcf-pool
   type: registry-image
@@ -115,6 +117,7 @@ jobs:
       file: env/metadata
       format: json
   - task: run-b-drats
+    attempts: *number_of_retries
     privileged: true
     file: bosh-disaster-recovery-acceptance-tests-prs/ci/tasks/run-b-drats/task.yml
     params:
