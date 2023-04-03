@@ -6,6 +6,18 @@
 
 #@ load("@ytt:data", "data")
 
+groups:
+- name: bump
+  jobs:
+    - bump-ci-tasks
+
+- name: test
+  jobs:
+    - unclaim-env
+    - merge-pr
+    - run-b-drats
+    - claim-env
+
 vault_creds: &vault_creds
   url: ((vault/server.url))
   role_id: ((vault/resource_credentials.role_id))
@@ -26,6 +38,11 @@ resource_types:
     repository: cryogenics/pr-queue-resource
 
 resources:
+- name: cryogenics-essentials
+  type: registry-image
+  source:
+    repository: cryogenics/essentials
+
 - name: bbr-artefacts
   type: s3
   icon: aws
@@ -67,6 +84,21 @@ resources:
     autosync_pr: true
     watch_checks_interval: "600"
     assign_to: "@me"
+
+- name: bosh-disaster-recovery-acceptance-tests
+  type: git
+  source:
+    branch: master
+    uri: git@github.com:cloudfoundry/bosh-disaster-recovery-acceptance-tests
+    private_key: ((github.ssh_key))
+
+- name: bosh-disaster-recovery-acceptance-tests-bump-ci-tasks
+  type: git
+  source:
+    uri: git@github.com:cloudfoundry/bosh-disaster-recovery-acceptance-tests
+    private_key: ((github.ssh_key))
+
+
 
 jobs:
 - name: claim-env
@@ -164,3 +196,42 @@ jobs:
     params:
       env_file: env/metadata
       action: unclaim
+
+- name: bump-ci-tasks
+  plan:
+    - in_parallel:
+      - get: cryogenics-essentials
+        trigger: true
+      - get: cryogenics-ci
+      - get: bosh-disaster-recovery-acceptance-tests
+    - in_parallel:
+      - load_var: cryogenics-essentials-version
+        file: cryogenics-essentials/tag
+      - task: bump-tasks
+        file: cryogenics-ci/deps-automation/bump-concourse-tasks/task.yml
+        input_mapping:
+          repo: bosh-disaster-recovery-acceptance-tests
+          image: cryogenics-essentials
+        output_mapping:
+          repo: bosh-disaster-recovery-acceptance-tests
+        params:
+          TASKS_FOLDER: ci/tasks/run-b-drats
+    - put: bosh-disaster-recovery-acceptance-tests-bump-ci-tasks
+      params:
+        repository: bosh-disaster-recovery-acceptance-tests
+        branch: &bump-ci-task-branch bump-cryogenics-essentials-to-v((.:cryogenics-essentials-version))
+        force: true
+    - task: create-pull-request
+      file: cryogenics-concourse-tasks/github-automation/create-pr/task.yml
+      params:
+        BASE: main
+        BRANCH: *bump-ci-task-branch
+        LABELS: dependencies
+        TITLE: Bump cryogenics/essentials to v((.:cryogenics-essentials-version))
+        MESSAGE: |
+          This is an automatically generated Pull Request from the Cryogenics CI Bot.
+          I have detected a new version of [cryogenics/essentials](https://hub.docker.com/r/cryogenics/essentials/tags) and automatically bumped
+          this package to benefit from the latest changes.
+          If this does not look right, please reach out to the [#mapbu-cryogenics](https://vmware.slack.com/archives/C01DXEYRKRU) team.
+      input_mapping:
+        source-repo: bosh-disaster-recovery-acceptance-tests-bump-ci-tasks
