@@ -4,8 +4,7 @@ platform: linux
 image_resource:
   type: registry-image
   source:
-    repository: pcfplatformrecovery/backup-and-restore
-    tag: latest
+    repository: cryogenics/essentials
 
 inputs:
 - name: bosh-disaster-recovery-acceptance-tests
