@@ -13,6 +13,17 @@ vault_creds: &vault_creds
 
 attempts: &number_of_retries 2
 
+groups:
+  - name: test
+    jobs:
+      - claim-env
+      - run-b-drats
+      - merge-pr
+      - unclaim-env
+  - name: bump
+    jobs:
+      - bump-golang
+
 resource_types:
 - name: pcf-pool
   type: registry-image
@@ -26,6 +37,12 @@ resource_types:
     repository: cryogenics/pr-queue-resource
 
 resources:
+- name: golang-release
+  type: git
+  source:
+    uri: https://github.com/bosh-packages/golang-release.git
+    tag_filter: v*
+
 - name: bbr-artefacts
   type: s3
   icon: aws
@@ -55,6 +72,22 @@ resources:
     api_token: ((toolsmiths.api_token))
     hostname: environments.toolsmiths.cf-app.com
     pool_name: #@ data.values.tas_versions[-1]["pool_name"]
+
+- name: b-drats
+  type: git
+  source:
+    uri: git@github.com:cloudfoundry/bosh-disaster-recovery-acceptance-tests
+    private_key: ((github.ssh_key))
+    branch: master
+
+#! A second resource is necessary for Golang bumps because when we push a branch
+#! to this repo via this resourse, the subsequent get steps will start tracking
+#! that branch, and not main as one would expect.
+- name: b-drats-golang-bump
+  type: git
+  source:
+    uri: git@github.com:cloudfoundry/bosh-disaster-recovery-acceptance-tests
+    private_key: ((github.ssh_key))
 
 - name: bosh-disaster-recovery-acceptance-tests-prs
   icon: source-pull
@@ -164,3 +197,49 @@ jobs:
     params:
       env_file: env/metadata
       action: unclaim
+
+- name: bump-golang
+  plan:
+  - in_parallel:
+    - get: cryogenics-concourse-tasks
+      resource: cryogenics-ci
+    - get: golang-release
+      trigger: true
+    - get: b-drats
+      params:
+        branch: main
+  - task: update-go-directive
+    file: cryogenics-concourse-tasks/tasks/bosh/update-go-directive/task.yml
+    input_mapping:
+      bosh-release-repo-with-vendored-golang: golang-release
+      golang-project-repo: b-drats
+    output_mapping:
+      golang-project-repo: b-drats
+  - load_var: golang-release-version
+    file: golang-release/.git/describe_ref
+  - put: b-drats-golang-bump
+    params:
+      repository: b-drats
+      branch: &golang-vendor-branch bump-golang-vendor-((.:golang-release-version))
+      force: true
+  #! We use `try` here to make this Job idempotent. It is possible that between
+  #! 2 runs nothing has changed in the inputs (no new versions) which will result
+  #! in an attempt to create a PR with nothing new. This would make this step
+  #! fail.
+  - try:
+      task: create-golang-vendor-pull-request
+      file: cryogenics-concourse-tasks/github-automation/create-pr/task.yml
+      params:
+        BASE: master
+        BRANCH: *golang-vendor-branch
+        LABELS: dependencies
+        TITLE: Bump golang-1-linux to version ((.:golang-release-version))
+        MESSAGE: |
+          This is an automatically generated Pull Request from the Cryogenics CI Bot.
+
+          I have detected a new version of [golang-release](https://github.com/bosh-packages/golang-release) and automatically bumped
+          this package to benefit from the latest changes.
+
+          If this does not look right, please reach out to the [#mapbu-cryogenics](https://vmware.slack.com/archives/C01DXEYRKRU) team.
+      input_mapping:
+        source-repo: b-drats-golang-bump
