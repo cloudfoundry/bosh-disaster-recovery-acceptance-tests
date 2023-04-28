@@ -11,7 +11,7 @@ vault_creds: &vault_creds
   role_id: ((vault/resource_credentials.role_id))
   secret_id: ((vault/resource_credentials.secret_id))
 
-attempts: &number_of_retries 2
+attempts: &number_of_retries 1
 
 groups:
   - name: test
