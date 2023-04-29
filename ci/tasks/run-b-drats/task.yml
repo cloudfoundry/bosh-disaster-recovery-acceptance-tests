@@ -4,7 +4,7 @@ platform: linux
 image_resource:
   type: registry-image
   source:
-    repository: pcfplatformrecovery/backup-and-restore
+    repository: cryogenics/essentials
     tag: latest
 
 inputs:
