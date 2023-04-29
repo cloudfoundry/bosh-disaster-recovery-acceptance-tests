@@ -10,7 +10,7 @@ groups:
 - name: bump
   jobs:
     - bump-ci-tasks
-
+    - bump-golang
 - name: test
   jobs:
     - unclaim-env
@@ -24,17 +24,6 @@ vault_creds: &vault_creds
   secret_id: ((vault/resource_credentials.secret_id))
 
 attempts: &number_of_retries 1
-
-groups:
-  - name: test
-    jobs:
-      - claim-env
-      - run-b-drats
-      - merge-pr
-      - unclaim-env
-  - name: bump
-    jobs:
-      - bump-golang
 
 resource_types:
 - name: pcf-pool
