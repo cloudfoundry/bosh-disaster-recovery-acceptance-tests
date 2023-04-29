@@ -94,14 +94,16 @@ func (t TruncateDBBlobstoreTestcase) AfterRestore(config Config) {
 	})
 
 	By("validate deployment instances are back", func() {
-		session := RunBoshCommandSuccessfullyWithFailureMessage("bosh get sdk instances",
-			config,
-			"-n",
-			"-d",
-			"small-deployment",
-			"instances",
-		)
-		Expect(string(session.Out.Contents())).To(MatchRegexp("small-job/[a-z0-9-]+[ \t]+running"))
+    Eventually(func() string {
+      session := RunBoshCommandSuccessfullyWithFailureMessage("bosh get sdk instances",
+        config,
+        "-n",
+        "-d",
+        "small-deployment",
+        "instances",
+      )
+      return string(session.Out.Contents())
+    }, fixtures.EventuallyTimeout, fixtures.EventuallyRetryInterval).Should(MatchRegexp("small-job/[a-z0-9-]+[ \t]+running"))
 	})
 }
 

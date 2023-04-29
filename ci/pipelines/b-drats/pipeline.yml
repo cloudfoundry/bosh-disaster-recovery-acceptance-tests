@@ -23,7 +23,7 @@ vault_creds: &vault_creds
   role_id: ((vault/resource_credentials.role_id))
   secret_id: ((vault/resource_credentials.secret_id))
 
-attempts: &number_of_retries 2
+attempts: &number_of_retries 1
 
 groups:
   - name: test
@@ -173,7 +173,7 @@ jobs:
         INCLUDE_DEPLOYMENT_TESTCASE: true
         INCLUDE_TRUNCATE_DB_BLOBSTORE_TESTCASE: true
         INCLUDE_CREDHUB_TESTCASE: true
-        TIMEOUT_IN_MINUTES: 2_880 #! 48h
+        TIMEOUT_IN_MINUTES: 1_440  #! 24h as this is the lifetime of a Toolsmith env
       output_mapping:
         config: b-drats-config
     - load_var: env-metadata
@@ -189,7 +189,7 @@ jobs:
       JUMPBOX_USER: ubuntu
       BBR_BINARY: bbr-binary-release/releases/bbr
       SSH_ALIVE_INTERVAL: 60 #! in seconds
-      GINKGO_TIMEOUT: 48h0m0s #! 48h to be consistent with TIMEOUT_IN_MINUTES in the b-drats test config from the previous task.
+      GINKGO_TIMEOUT: 24h0m0s #! 48h to be consistent with TIMEOUT_IN_MINUTES in the b-drats test config from the previous task.
     input_mapping:
       bbr-binary-release: bbr-artefacts
       bosh-disaster-recovery-acceptance-tests: bosh-disaster-recovery-acceptance-tests-prs

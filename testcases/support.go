@@ -5,6 +5,8 @@ import (
 	"strings"
 	"time"
 
+
+	"github.com/cloudfoundry-incubator/bosh-disaster-recovery-acceptance-tests/fixtures"
 	. "github.com/cloudfoundry-incubator/bosh-disaster-recovery-acceptance-tests/runner"
 	. "github.com/onsi/gomega"
 )
@@ -23,7 +25,7 @@ func monitWait(config Config, jobName, status string) {
 			}
 		}
 		return ""
-	}, 5*time.Minute, time.Second).Should(HaveSuffix(status))
+	}, fixtures.EventuallyTimeout, fixtures.EventuallyRetryInterval).Should(HaveSuffix(status))
 }
 
 func monitStop(config Config, jobName string) {
