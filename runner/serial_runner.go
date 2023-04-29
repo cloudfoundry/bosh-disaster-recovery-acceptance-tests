@@ -6,6 +6,7 @@ import (
 
 	"os"
 
+	"github.com/cloudfoundry-incubator/bosh-disaster-recovery-acceptance-tests/fixtures"
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
 )
@@ -100,7 +101,7 @@ func RunBoshDisasterRecoveryAcceptanceTestsSerially(config Config, testCases []T
 				By("waiting for bosh director api to be available", func() {
 					Eventually(func() int {
 						return RunBoshCommand("bosh releases", config, "releases").ExitCode()
-					}, "60s", "1s").Should(BeZero())
+					}, fixtures.EventuallyTimeout, fixtures.EventuallyRetryInterval).Should(BeZero())
 				})
 
 				By("running the after restore step", func() {
