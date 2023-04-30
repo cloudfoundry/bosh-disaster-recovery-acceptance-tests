@@ -10,7 +10,7 @@ groups:
 - name: bump
   jobs:
     - bump-ci-tasks
-
+    - bump-golang
 - name: test
   jobs:
     - unclaim-env
@@ -24,17 +24,6 @@ vault_creds: &vault_creds
   secret_id: ((vault/resource_credentials.secret_id))
 
 attempts: &number_of_retries 1
-
-groups:
-  - name: test
-    jobs:
-      - claim-env
-      - run-b-drats
-      - merge-pr
-      - unclaim-env
-  - name: bump
-    jobs:
-      - bump-golang
 
 resource_types:
 - name: pcf-pool
@@ -253,7 +242,7 @@ jobs:
         branch: &bump-ci-task-branch bump-cryogenics-essentials-to-v((.:cryogenics-essentials-version))
         force: true
     - task: create-pull-request
-      file: cryogenics-concourse-tasks/github-automation/create-pr/task.yml
+      file: cryogenics-ci/github-automation/create-pr/task.yml
       params:
         BASE: main
         BRANCH: *bump-ci-task-branch
@@ -266,6 +255,7 @@ jobs:
           If this does not look right, please reach out to the [#mapbu-cryogenics](https://vmware.slack.com/archives/C01DXEYRKRU) team.
       input_mapping:
         source-repo: bosh-disaster-recovery-acceptance-tests-bump-ci-tasks
+        cryogenics-concourse-tasks: cryogenics-ci
 
 - name: bump-golang
   plan:
