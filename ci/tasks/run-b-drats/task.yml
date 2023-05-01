@@ -1,30 +1,25 @@
----
 platform: linux
-
 image_resource:
   type: registry-image
   source:
     repository: cryogenics/essentials
-    tag: latest
-
+    tag: 0.1.43
 inputs:
-- name: bosh-disaster-recovery-acceptance-tests
-- name: bbr-binary-release
-- name: b-drats-integration-config
-- name: bosh-vars-store
-  optional: true
-- name: terraform-state
-  optional: true
-
+  - name: bosh-disaster-recovery-acceptance-tests
+  - name: bbr-binary-release
+  - name: b-drats-integration-config
+  - name: bosh-vars-store
+    optional: true
+  - name: terraform-state
+    optional: true
 params:
   JUMPBOX_VARS_STORE_PATH:
   JUMPBOX_IP:
   JUMPBOX_PRIVATE_KEY:
   JUMPBOX_USER: jumpbox
-  INTEGRATION_CONFIG_PATH: integration_config.json # JSON file in b-drats-integration-config resource
-  SSH_ALIVE_INTERVAL: 30 # in seconds
+  INTEGRATION_CONFIG_PATH: integration_config.json
+  SSH_ALIVE_INTERVAL: 30
   BBR_BINARY: bbr-binary-release/bbr-[0-9]*-linux-amd64
-  GINKGO_TIMEOUT: 24h0m0s # For more info run `ginkgo help`.
-
+  GINKGO_TIMEOUT: 24h0m0s
 run:
   path: bosh-disaster-recovery-acceptance-tests/ci/tasks/run-b-drats/task.sh
