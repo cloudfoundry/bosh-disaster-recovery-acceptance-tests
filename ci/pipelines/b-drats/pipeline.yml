@@ -244,7 +244,7 @@ jobs:
     - task: create-pull-request
       file: cryogenics-ci/github-automation/create-pr/task.yml
       params:
-        BASE: main
+        BASE: master
         BRANCH: *bump-ci-task-branch
         LABELS: dependencies
         TITLE: Bump cryogenics/essentials to v((.:cryogenics-essentials-version))
