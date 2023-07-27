@@ -7,16 +7,16 @@
 #@ load("@ytt:data", "data")
 
 groups:
-- name: bump
-  jobs:
-    - bump-ci-tasks
-    - bump-golang
 - name: test
   jobs:
     - unclaim-env
     - merge-pr
     - run-b-drats
     - claim-env
+- name: bump
+  jobs:
+    - bump-ci-tasks
+    - bump-golang
 
 vault_creds: &vault_creds
   url: ((vault/server.url))
