@@ -6,7 +6,7 @@ import (
 
 	"github.com/cloudfoundry-incubator/bosh-disaster-recovery-acceptance-tests/fixtures"
 	. "github.com/cloudfoundry-incubator/bosh-disaster-recovery-acceptance-tests/runner"
-	. "github.com/onsi/ginkgo"
+	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
 )
 
@@ -94,16 +94,16 @@ func (t TruncateDBBlobstoreTestcase) AfterRestore(config Config) {
 	})
 
 	By("validate deployment instances are back", func() {
-    Eventually(func() string {
-      session := RunBoshCommandSuccessfullyWithFailureMessage("bosh get sdk instances",
-        config,
-        "-n",
-        "-d",
-        "small-deployment",
-        "instances",
-      )
-      return string(session.Out.Contents())
-    }, fixtures.EventuallyTimeout, fixtures.EventuallyRetryInterval).Should(MatchRegexp("small-job/[a-z0-9-]+[ \t]+running"))
+		Eventually(func() string {
+			session := RunBoshCommandSuccessfullyWithFailureMessage("bosh get sdk instances",
+				config,
+				"-n",
+				"-d",
+				"small-deployment",
+				"instances",
+			)
+			return string(session.Out.Contents())
+		}, fixtures.EventuallyTimeout, fixtures.EventuallyRetryInterval).Should(MatchRegexp("small-job/[a-z0-9-]+[ \t]+running"))
 	})
 }
 

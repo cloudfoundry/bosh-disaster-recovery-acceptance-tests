@@ -3,7 +3,7 @@ package fixtures
 import (
 	"path"
 	"runtime"
-  "time"
+	"time"
 )
 
 var EventuallyTimeout = 10 * time.Minute

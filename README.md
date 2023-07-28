@@ -6,8 +6,7 @@ The test runner provides hooks around `bbr director backup` and `bbr director re
 
 ## Dependencies
 
-1. Install [Golang](https://golang.org/doc/install)
-1. Install [`ginkgo` CLI](https://github.com/onsi/ginkgo#set-me-up)
+1. Install [Go](https://golang.org/doc/install)
 1. Download [`bbr` CLI](https://github.com/cloudfoundry-incubator/bosh-backup-and-restore/releases)
 
 ## Running B-DRATs in your pipelines
@@ -20,8 +19,8 @@ Please refer to our b-drats [pipeline definition](ci/pipelines/b-drats/pipeline.
 
 1. Clone this repo
     ```bash
-    $ go get github.com/cloudfoundry-incubator/bosh-disaster-recovery-acceptance-tests
-    $ cd $GOPATH/src/github.com/cloudfoundry-incubator/bosh-disaster-recovery-acceptance-tests
+    $ git clone git@github.com:cloudfoundry/bosh-disaster-recovery-acceptance-tests.git
+    $ cd bosh-disaster-recovery-acceptance-tests
     ```
 1. Create an `integration-config.json` file, for example:
     ```json

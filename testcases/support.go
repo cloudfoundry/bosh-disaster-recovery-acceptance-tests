@@ -5,7 +5,6 @@ import (
 	"strings"
 	"time"
 
-
 	"github.com/cloudfoundry-incubator/bosh-disaster-recovery-acceptance-tests/fixtures"
 	. "github.com/cloudfoundry-incubator/bosh-disaster-recovery-acceptance-tests/runner"
 	. "github.com/onsi/gomega"
