@@ -1,16 +1,15 @@
 package acceptance_test
 
 import (
-	"log"
-	"os"
-
 	"github.com/cloudfoundry-incubator/bosh-disaster-recovery-acceptance-tests/runner"
 	"github.com/cloudfoundry-incubator/bosh-disaster-recovery-acceptance-tests/testcases"
-	. "github.com/onsi/ginkgo"
+	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
+	"log"
+	"os"
 )
 
-var _ = Describe("backing up bosh", func() {
+var _ = Describe("backing up bosh", Ordered, func() {
 	config, filter := loadConfig()
 
 	SetDefaultEventuallyTimeout(config.Timeout)
@@ -28,7 +27,7 @@ var _ = Describe("backing up bosh", func() {
 
 	runner.RunBoshDisasterRecoveryAcceptanceTestsSerially(config, filteredTestCases)
 
-	AfterSuite(func() {
+	AfterAll(func() {
 		By("Cleanup bosh ssh private key", func() {
 			err := os.Remove(config.BOSH.SSHPrivateKeyPath)
 			Expect(err).NotTo(HaveOccurred())
