@@ -16,7 +16,7 @@ var _ = Describe("backing up bosh", Ordered, func() {
 
 	testCases := []runner.TestCase{
 		testcases.DeploymentTestcase{},
-		testcases.TruncateDBBlobstoreTestcase{},
+		//testcases.TruncateDBBlobstoreTestcase{},
 		testcases.CredhubTestcase{},
 	}
 

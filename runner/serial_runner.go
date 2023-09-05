@@ -2,13 +2,10 @@ package runner
 
 import (
 	"fmt"
-	"io/ioutil"
-
-	"os"
-
 	"github.com/cloudfoundry-incubator/bosh-disaster-recovery-acceptance-tests/fixtures"
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
+	"path"
 )
 
 func RunBoshDisasterRecoveryAcceptanceTestsSerially(config Config, testCases []TestCase) {
@@ -21,24 +18,31 @@ func RunBoshDisasterRecoveryAcceptanceTestsSerially(config Config, testCases []T
 		testCase := test
 
 		Context(fmt.Sprintf("test case %s", testCase.Name()), func() {
-			var artifactPath string
+			var (
+				artifactPath       commonArtifactPath
+				boshPrivateKeyPath string
+			)
+
 			BeforeEach(func() {
-				var err error
-				artifactPath, err = ioutil.TempDir("", "b-drats")
-				Expect(err).NotTo(HaveOccurred())
+				artifactPath = newArtifactPath(config)
+
+				// When running with a jumpbox, the private key is already copied across
+				boshPrivateKeyPath = config.BOSH.SSHPrivateKeyPath
+				if config.Jumpbox != nil {
+					boshPrivateKeyPath = path.Join("/tmp", path.Base(config.BOSH.SSHPrivateKeyPath))
+				}
 			})
 
 			AfterEach(func() {
 				By("bbr director backup-cleanup", func() {
-					RunCommandSuccessfullyWithFailureMessage(
+					RunBBRCommandSuccessfullyWithFailureMessage(
 						"bbr director backup-cleanup",
-						os.Stdout,
+						config,
 						fmt.Sprintf(
-							"%s director --host %s --username %s --private-key-path %s backup-cleanup",
-							config.BBRBinaryPath,
+							"director --host %s --username %s --private-key-path %s backup-cleanup",
 							config.BOSH.Host,
 							config.BOSH.SSHUsername,
-							config.BOSH.SSHPrivateKeyPath,
+							boshPrivateKeyPath,
 						),
 					)
 				})
@@ -49,8 +53,7 @@ func RunBoshDisasterRecoveryAcceptanceTestsSerially(config Config, testCases []T
 				})
 
 				By("Cleanup bbr director backup artifact", func() {
-					err := os.RemoveAll(artifactPath)
-					Expect(err).NotTo(HaveOccurred())
+					artifactPath.cleanup()
 				})
 			})
 
@@ -61,16 +64,15 @@ func RunBoshDisasterRecoveryAcceptanceTestsSerially(config Config, testCases []T
 				})
 
 				By("backing up", func() {
-					RunCommandSuccessfullyWithFailureMessage(
+					RunBBRCommandSuccessfullyWithFailureMessage(
 						"bbr director backup",
-						os.Stdout,
+						config,
 						fmt.Sprintf(
-							"%s director --host %s --username %s --private-key-path %s backup --artifact-path %s",
-							config.BBRBinaryPath,
+							"director --host %s --username %s --private-key-path %s backup --artifact-path %s",
 							config.BOSH.Host,
 							config.BOSH.SSHUsername,
-							config.BOSH.SSHPrivateKeyPath,
-							artifactPath,
+							boshPrivateKeyPath,
+							artifactPath.path(),
 						),
 					)
 				})
@@ -80,20 +82,19 @@ func RunBoshDisasterRecoveryAcceptanceTestsSerially(config Config, testCases []T
 					testCase.AfterBackup(config)
 				})
 
+				artifactToRestore := artifactPath.firstMatch(config.BOSH.Host) // prints output
+
 				By("restoring", func() {
-					RunCommandSuccessfullyWithFailureMessage(
+					RunBBRCommandSuccessfullyWithFailureMessage(
 						"bbr director restore",
-						os.Stdout,
+						config,
 						fmt.Sprintf(
-							"%s director --host %s --username %s --private-key-path %s "+
-								"restore --artifact-path %s/$(ls %s | grep %s | head -n 1)",
-							config.BBRBinaryPath,
+							"director --host %s --username %s --private-key-path %s "+
+								"restore --artifact-path %s",
 							config.BOSH.Host,
 							config.BOSH.SSHUsername,
-							config.BOSH.SSHPrivateKeyPath,
-							artifactPath,
-							artifactPath,
-							config.BOSH.Host,
+							boshPrivateKeyPath,
+							artifactToRestore,
 						),
 					)
 				})
@@ -111,4 +112,12 @@ func RunBoshDisasterRecoveryAcceptanceTestsSerially(config Config, testCases []T
 			})
 		})
 	}
+
+	BeforeAll(func() {
+		config.Jumpbox.Deploy(config)
+	})
+
+	AfterAll(func() {
+		config.Jumpbox.Cleanup(config)
+	})
 }
