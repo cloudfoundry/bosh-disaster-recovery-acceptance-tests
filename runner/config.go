@@ -13,6 +13,7 @@ type Config struct {
 	ArtifactPath  string
 	StemcellSrc   string
 	Timeout       time.Duration
+	Jumpbox       *jumpbox
 }
 
 type CloudConfig struct {
@@ -69,6 +70,15 @@ func NewConfig(integrationConfig acceptance.IntegrationConfig, bbrBinaryPath, ar
 		defaultAZ = integrationConfig.DeploymentAZ
 	}
 
+	var jb *jumpbox
+	if integrationConfig.DeployJumpbox {
+		jb = &jumpbox{
+			network: defaultNetwork,
+			vmType:  defaultVMType,
+			az:      defaultAZ,
+		}
+	}
+
 	return Config{
 		BOSH: BOSHConfig{
 			Host:              integrationConfig.Host,
@@ -93,5 +103,6 @@ func NewConfig(integrationConfig acceptance.IntegrationConfig, bbrBinaryPath, ar
 		BBRBinaryPath: bbrBinaryPath,
 		ArtifactPath:  artifactDirPath,
 		Timeout:       timeout,
+		Jumpbox:       jb,
 	}, nil
 }

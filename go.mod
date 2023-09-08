@@ -1,6 +1,8 @@
 module github.com/cloudfoundry-incubator/bosh-disaster-recovery-acceptance-tests
 
-go 1.20
+go 1.21
+
+toolchain go1.21.0
 
 require (
 	code.cloudfoundry.org/credhub-cli v0.0.0-20230724130814-3ea1e40d9368
