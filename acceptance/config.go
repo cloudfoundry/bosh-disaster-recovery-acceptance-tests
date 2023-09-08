@@ -1,7 +1,7 @@
 package acceptance
 
 import (
-	"io/ioutil"
+	"os"
 )
 
 type IntegrationConfig struct {
@@ -20,6 +20,7 @@ type IntegrationConfig struct {
 	DeploymentNetwork   string `json:"deployment_network"`
 	DeploymentAZ        string `json:"deployment_az"`
 	StemcellSrc         string `json:"stemcell_src"`
+	DeployJumpbox       bool   `json:"deploy_jumpbox"`
 }
 
 func (i IntegrationConfig) SSHPrivateKeyPath() (string, error) {
@@ -31,12 +32,12 @@ func (i IntegrationConfig) CACertPath() (string, error) {
 }
 
 func (i IntegrationConfig) writeSecretToFile(contents string) (string, error) {
-	file, err := ioutil.TempFile("", "b-drats")
+	file, err := os.CreateTemp("", "b-drats")
 	if err != nil {
 		return "", err
 	}
 
-	err = ioutil.WriteFile(file.Name(), []byte(contents), 0400)
+	err = os.WriteFile(file.Name(), []byte(contents), 0400)
 	if err != nil {
 		return "", err
 	}

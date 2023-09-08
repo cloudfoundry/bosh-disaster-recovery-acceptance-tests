@@ -2,6 +2,7 @@ package runner
 
 import (
 	"io"
+	"os"
 	"os/exec"
 	"strings"
 
@@ -28,6 +29,19 @@ func RunCommandInDirectorVMSuccessfullyWithFailureMessage(description string, co
 	session := runCommandWithStreamInDirectorVM(description, GinkgoWriter, config, cmd, args...)
 	Expect(session).To(gexec.Exit(0), "Command errored: "+description)
 	return session
+}
+
+func RunBBRCommand(description string, config Config, args ...string) *gexec.Session {
+	if config.Jumpbox != nil {
+		return config.Jumpbox.RunBBR(description, config, args...)
+	}
+
+	return runCommandWithStream(description, os.Stdout, config.BBRBinaryPath, args...)
+}
+
+func RunBBRCommandSuccessfullyWithFailureMessage(description string, config Config, args ...string) {
+	session := RunBBRCommand(description, config, args...)
+	Expect(session).To(gexec.Exit(0), "Command errored: "+description)
 }
 
 func RunCommandSuccessfullyWithFailureMessage(description string, writer io.Writer, cmd string, args ...string) *gexec.Session {

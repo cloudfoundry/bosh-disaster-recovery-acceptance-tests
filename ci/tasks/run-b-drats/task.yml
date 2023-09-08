@@ -21,5 +21,6 @@ params:
   SSH_ALIVE_INTERVAL: 30
   BBR_BINARY: bbr-binary-release/bbr-[0-9]*-linux-amd64
   GINKGO_TIMEOUT: 24h0m0s
+  SSHUTTLE_FLAGS:
 run:
   path: bosh-disaster-recovery-acceptance-tests/ci/tasks/run-b-drats/task.sh
