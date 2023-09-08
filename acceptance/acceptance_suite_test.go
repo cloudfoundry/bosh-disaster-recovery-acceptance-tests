@@ -10,8 +10,6 @@ import (
 	"testing"
 
 	"encoding/json"
-	"io/ioutil"
-
 	"github.com/cloudfoundry-incubator/bosh-disaster-recovery-acceptance-tests/acceptance"
 	"github.com/cloudfoundry-incubator/bosh-disaster-recovery-acceptance-tests/runner"
 )
@@ -22,12 +20,12 @@ func TestAcceptance(t *testing.T) {
 }
 
 func loadConfig() (runner.Config, runner.TestCaseFilter) {
-	artifactDirPath, err := ioutil.TempDir("", "b-drats")
+	artifactDirPath, err := os.MkdirTemp("", "b-drats")
 	if err != nil {
 		panic(err)
 	}
 
-	rawConfig, err := ioutil.ReadFile(mustHaveEnv("INTEGRATION_CONFIG_PATH"))
+	rawConfig, err := os.ReadFile(mustHaveEnv("INTEGRATION_CONFIG_PATH"))
 	if err != nil {
 		panic(err)
 	}
