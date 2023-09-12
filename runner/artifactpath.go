@@ -2,15 +2,17 @@ package runner
 
 import (
 	"fmt"
-	. "github.com/onsi/ginkgo/v2"
-	. "github.com/onsi/gomega"
 	"os"
 	"path/filepath"
 	"regexp"
 	"strings"
+
+	. "github.com/onsi/ginkgo/v2"
+	. "github.com/onsi/gomega"
 )
 
 var tmpMatcher = regexp.MustCompile(`: stdout \| (/tmp/\S+)\s`)
+var tmpMatcherExistingJumpbox = regexp.MustCompile(`(/tmp/\S+)\s`)
 
 func newArtifactPath(config Config) commonArtifactPath {
 	if config.Jumpbox == nil {
@@ -58,8 +60,10 @@ func (l localArtifactPath) firstMatch(substr string) string {
 func newJumpboxArtifactPath(config Config) commonArtifactPath {
 	By("creating an artifact directory on the jumpbox")
 	session := config.Jumpbox.Run("make temporary directory", config, "mktemp", "-d")
+	if config.Jumpbox.HostIsSet() {
+		tmpMatcher = tmpMatcherExistingJumpbox
+	}
 	matches := tmpMatcher.FindStringSubmatch(string(session.Out.Contents()))
-
 	if len(matches) == 2 {
 		return jumpboxArtifactPath{
 			config: config,
@@ -89,8 +93,10 @@ func (l jumpboxArtifactPath) cleanup() {
 func (l jumpboxArtifactPath) firstMatch(substr string) string {
 	By("listing the contents of the artifact directory on the jumpbox")
 	session := l.config.Jumpbox.Run("list", l.config, "find", l.dir, "-maxdepth 1")
+	if l.config.Jumpbox.HostIsSet() {
+		tmpMatcher = tmpMatcherExistingJumpbox
+	}
 	contents := tmpMatcher.FindAllStringSubmatch(string(session.Out.Contents()), -1)
-
 	for _, m := range contents {
 		if m[1] == l.dir {
 			continue // skip the parent directory

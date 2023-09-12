@@ -1,12 +1,13 @@
 package acceptance_test
 
 import (
+	"log"
+	"os"
+
 	"github.com/cloudfoundry-incubator/bosh-disaster-recovery-acceptance-tests/runner"
 	"github.com/cloudfoundry-incubator/bosh-disaster-recovery-acceptance-tests/testcases"
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
-	"log"
-	"os"
 )
 
 var _ = Describe("backing up bosh", Ordered, func() {
@@ -16,7 +17,7 @@ var _ = Describe("backing up bosh", Ordered, func() {
 
 	testCases := []runner.TestCase{
 		testcases.DeploymentTestcase{},
-		//testcases.TruncateDBBlobstoreTestcase{},
+		testcases.TruncateDBBlobstoreTestcase{},
 		testcases.CredhubTestcase{},
 	}
 

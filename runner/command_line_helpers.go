@@ -14,7 +14,11 @@ import (
 )
 
 func RunBoshCommand(description string, config Config, args ...string) *gexec.Session {
-	return runCommandWithStream(description, GinkgoWriter, getBoshBaseCommand(config), args...)
+	return RunCommandWithStream(description, GinkgoWriter, getBoshBaseCommand(config), args...)
+}
+
+func RunBoshCommandViaSsh(description string, config Config, sshBaseCommand string, args ...string) *gexec.Session {
+	return RunCommandWithStream(description, GinkgoWriter, fmt.Sprintf("%s -c \"%s\"", sshBaseCommand, getBoshBaseCommand(config)), args...)
 }
 
 func RunBoshCommandSuccessfullyWithFailureMessage(description string, config Config, args ...string) *gexec.Session {
@@ -36,7 +40,7 @@ func RunBBRCommand(description string, config Config, args ...string) *gexec.Ses
 		return config.Jumpbox.RunBBR(description, config, args...)
 	}
 
-	return runCommandWithStream(description, os.Stdout, config.BBRBinaryPath, args...)
+	return RunCommandWithStream(description, os.Stdout, config.BBRBinaryPath, args...)
 }
 
 func RunBBRCommandSuccessfullyWithFailureMessage(description string, config Config, args ...string) {
@@ -45,7 +49,7 @@ func RunBBRCommandSuccessfullyWithFailureMessage(description string, config Conf
 }
 
 func RunCommandSuccessfullyWithFailureMessage(description string, writer io.Writer, cmd string, args ...string) *gexec.Session {
-	session := runCommandWithStream(description, writer, cmd, args...)
+	session := RunCommandWithStream(description, writer, cmd, args...)
 	Expect(session).To(gexec.Exit(0), "Command errored: "+description)
 	return session
 }
@@ -71,7 +75,7 @@ func runCommandWithStreamInDirectorVM(description string, writer io.Writer, conf
 	return session
 }
 
-func runCommandWithStream(description string, writer io.Writer, cmd string, args ...string) *gexec.Session {
+func RunCommandWithStream(description string, writer io.Writer, cmd string, args ...string) *gexec.Session {
 	cmdToRunArgs := strings.Join(args, " ")
 	cmdToRun := cmd + " " + cmdToRunArgs
 

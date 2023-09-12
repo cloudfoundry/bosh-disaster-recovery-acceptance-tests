@@ -78,6 +78,16 @@ func NewConfig(integrationConfig acceptance.IntegrationConfig, bbrBinaryPath, ar
 			az:      defaultAZ,
 		}
 	}
+	if integrationConfig.JumpboxHost != "" && integrationConfig.JumpboxPrivKey != "" && integrationConfig.JumpboxUser != "" {
+		jb = &jumpbox{
+			network: defaultNetwork,
+			vmType:  defaultVMType,
+			az:      defaultAZ,
+			privkey: integrationConfig.JumpboxPrivKey,
+			host:    integrationConfig.JumpboxHost,
+			user:    integrationConfig.JumpboxUser,
+		}
+	}
 
 	return Config{
 		BOSH: BOSHConfig{
