@@ -2,7 +2,6 @@ package testcases
 
 import (
 	"fmt"
-	"time"
 
 	"github.com/cloudfoundry-incubator/bosh-disaster-recovery-acceptance-tests/fixtures"
 	. "github.com/cloudfoundry-incubator/bosh-disaster-recovery-acceptance-tests/runner"
@@ -43,6 +42,7 @@ func (t TruncateDBBlobstoreTestcase) BeforeBackup(config Config) {
 }
 
 func (t TruncateDBBlobstoreTestcase) AfterBackup(config Config) {
+
 	monitStop(config, "director")
 	monitStop(config, "uaa")
 	monitStop(config, "credhub")
@@ -59,11 +59,16 @@ func (t TruncateDBBlobstoreTestcase) AfterBackup(config Config) {
 		"pre-start all jobs",
 		config,
 		"sudo bash -c",
-		"'for pre in $(ls /var/vcap/jobs/**/bin/pre-start); do $pre; done'",
+		"'for pre in $(ls /var/vcap/jobs/**/bin/pre-start| grep -v monit); do $pre; done'",
 	)
 
-	fmt.Println("Sleeping for 20 seconds to allow all jobs to finish pre-start")
-	time.Sleep(time.Second * 20)
+	fmt.Println("Waiting for  all jobs to finish pre-start")
+	RunCommandInDirectorVMSuccessfullyWithFailureMessage(
+		"pre-start all jobs",
+		config,
+		"sudo bash -c",
+		`'while pgrep pre-start; do sleep 1; echo "waiting for pre-start to finish"; done'`,
+	)
 
 	monitStart(config, "postgres")
 	monitStart(config, "blobstore_nginx")

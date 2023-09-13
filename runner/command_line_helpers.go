@@ -87,13 +87,27 @@ func RunCommandWithStream(description string, writer io.Writer, cmd string, args
 	fmt.Fprintln(writer, "")
 	return session
 }
-
+func getBoshAllProxy(config Config) string {
+	// ssh+socks5://ubuntu@34.72.88.156:22?private-key=/tmp/tmp.bBURxmHm5j
+	if config.Jumpbox.HostIsSet() {
+		keyPath, err := config.Jumpbox.WriteKeyFile()
+		if err != nil {
+			Fail("failed writing jumphost keyfile")
+		}
+		return fmt.Sprintf("BOSH_ALL_PROXY=ssh+socks5://%s:22?private-key=%s", config.Jumpbox.GetUserHost(), keyPath)
+	}
+	return ""
+}
 func getBoshBaseCommand(config Config) string {
-	return fmt.Sprintf("bosh "+
-		"--environment=%s "+
-		"--client=%s "+
-		"--client-secret=%s "+
-		"--ca-cert=%s ",
+
+	return fmt.Sprintf(
+		"%s "+
+			"bosh "+
+			"--environment=%s "+
+			"--client=%s "+
+			"--client-secret=%s "+
+			"--ca-cert=%s ",
+		getBoshAllProxy(config),
 		config.BOSH.Host,
 		config.BOSH.Client,
 		config.BOSH.ClientSecret,
