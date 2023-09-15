@@ -156,14 +156,15 @@ jobs:
 - name: run-b-drats
   serial: true
   plan:
+  - get: env
+    trigger: true
+    passed:
+      - claim-env
   - in_parallel:
     - get: bosh-disaster-recovery-acceptance-tests-prs
       passed:
         - claim-env
-    - get: env
-      trigger: true
-      passed:
-        - claim-env
+
     - get: cryogenics-ci
     - get: jammy-stemcell
     - get: bbr-artefacts
@@ -171,6 +172,34 @@ jobs:
         unpack: true
     - get: image-cryogenics-essentials
     - get: image-backup-restore
+    #! This is here to improve the speed of running b-drats. Our env has TAS deployed. That adds 11gb of blobs to the blobstore. 
+    #! the tests deploy zookeeper and do not care about TAS but the existing TAS blobs have increased runtime from ~30m to over 3h
+    - task: bosh-clean-deployments
+      config: 
+        image_resource:
+          name: ""
+          source:
+            repository: harbor-repo.vmware.com/cryogenics/essentials
+          type: docker-image
+        inputs:
+        - name: env
+        platform: linux
+        run:
+          args:
+          - -c
+          - |
+            set -eu
+            set -o pipefail
+            source <( smith -l env/metadata bosh )
+             for ds in "$(bosh ds --json | jq .Tables[].Rows[].name -r)"; do
+               if [[ $ds == "" ]]; then
+                 continue
+               else
+                 bosh -d $ds delete-deployment -n
+               fi
+             done
+             bosh clean-up --all -n
+          path: bash
   - in_parallel:
     - put: bosh-disaster-recovery-acceptance-tests-prs
       params:
