@@ -32,8 +32,12 @@ type jumpbox struct {
 func (j *jumpbox) HostIsSet() bool {
 	return j.host != ""
 }
+func (j *jumpbox) GetUserHost() string {
+	return fmt.Sprintf("%s@%s", j.user, j.host)
+}
+
 func (j *jumpbox) getSshBaseCommand() string {
-	keyPath, err := j.writeKeyFile()
+	keyPath, err := j.WriteKeyFile()
 	if err != nil {
 		Fail("failed writing jumphost keyfile")
 	}
@@ -48,7 +52,7 @@ func (j *jumpbox) getSshBaseCommand() string {
 	)
 }
 func (j *jumpbox) getScpBaseCommand(sourcePath, targetPath string) string {
-	keyPath, err := j.writeKeyFile()
+	keyPath, err := j.WriteKeyFile()
 	if err != nil {
 		Fail("failed writing jumphost keyfile")
 	}
@@ -80,7 +84,7 @@ func (j *jumpbox) Run(description string, config Config, args ...string) *gexec.
 
 	return RunBoshCommand(description, config, params...)
 }
-func (j *jumpbox) writeKeyFile() (string, error) {
+func (j *jumpbox) WriteKeyFile() (string, error) {
 	d, err := os.MkdirTemp("", "drats")
 	if err != nil {
 		return "", err
@@ -129,7 +133,7 @@ func (j *jumpbox) Cleanup(config Config) {
 		GinkgoWriter.Println("Jumpbox cleanup not needed")
 		return
 	}
-	if j.host != "" {
+	if j.host == "" {
 		By("cleaning up the jumpbox")
 		RunBoshCommandSuccessfullyWithFailureMessage("cleaning up the jumpbox", config, "-n", "-d", deployment, "delete-deployment")
 	}
