@@ -45,13 +45,13 @@ resource_types:
 - name: pcf-pool
   type: registry-image
   source:
-    repository: cftoolsmiths/toolsmiths-envs-resource
+    repository: harbor-repo.vmware.com/dockerhub-proxy-cache/cftoolsmiths/toolsmiths-envs-resource
     tag: latest
 
 - name: pull-request
   type: docker-image
   source:
-    repository: cryogenics/pr-queue-resource
+    repository: harbor-repo.vmware.com/dockerhub-proxy-cache/cryogenics/pr-queue-resource
 
 resources:
 - name: image-cryogenics-essentials
