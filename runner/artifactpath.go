@@ -60,7 +60,7 @@ func (l localArtifactPath) firstMatch(substr string) string {
 func newJumpboxArtifactPath(config Config) commonArtifactPath {
 	By("creating an artifact directory on the jumpbox")
 	session := config.Jumpbox.Run("make temporary directory", config, "mktemp", "-d")
-	if config.Jumpbox.HostIsSet() {
+	if config.Jumpbox != nil && config.Jumpbox.HostIsSet() {
 		tmpMatcher = tmpMatcherExistingJumpbox
 	}
 	matches := tmpMatcher.FindStringSubmatch(string(session.Out.Contents()))
@@ -93,7 +93,7 @@ func (l jumpboxArtifactPath) cleanup() {
 func (l jumpboxArtifactPath) firstMatch(substr string) string {
 	By("listing the contents of the artifact directory on the jumpbox")
 	session := l.config.Jumpbox.Run("list", l.config, "find", l.dir, "-maxdepth 1")
-	if l.config.Jumpbox.HostIsSet() {
+	if l.config.Jumpbox != nil && l.config.Jumpbox.HostIsSet() {
 		tmpMatcher = tmpMatcherExistingJumpbox
 	}
 	contents := tmpMatcher.FindAllStringSubmatch(string(session.Out.Contents()), -1)

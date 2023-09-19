@@ -89,7 +89,7 @@ func RunCommandWithStream(description string, writer io.Writer, cmd string, args
 }
 func getBoshAllProxy(config Config) string {
 	// ssh+socks5://ubuntu@34.72.88.156:22?private-key=/tmp/tmp.bBURxmHm5j
-	if config.Jumpbox.HostIsSet() {
+	if config.Jumpbox != nil && config.Jumpbox.HostIsSet() {
 		keyPath, err := config.Jumpbox.WriteKeyFile()
 		if err != nil {
 			Fail("failed writing jumphost keyfile")
