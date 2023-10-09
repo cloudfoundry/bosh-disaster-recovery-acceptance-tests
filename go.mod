@@ -6,7 +6,7 @@ toolchain go1.21.0
 
 require (
 	code.cloudfoundry.org/credhub-cli v0.0.0-20230724130814-3ea1e40d9368
-	github.com/onsi/ginkgo/v2 v2.12.1
+	github.com/onsi/ginkgo/v2 v2.13.0
 	github.com/onsi/gomega v1.28.0
 )
 
