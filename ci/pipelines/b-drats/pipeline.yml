@@ -44,6 +44,7 @@ groups:
 resource_types:
 - name: shepherd
   source:
+    tag: v1
     repository: us-west2-docker.pkg.dev/shepherd-268822/shepherd2/concourse-resource
   type: registry-image
 
@@ -266,7 +267,7 @@ jobs:
       - run-b-drats
   - put: env
     params:
-      resurce: env
+      resource: env
       action: release
 
 - name: bump-golang
