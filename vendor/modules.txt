@@ -1,4 +1,4 @@
-# code.cloudfoundry.org/credhub-cli v0.0.0-20231211140702-4cb99a786107
+# code.cloudfoundry.org/credhub-cli v0.0.0-20240101140310-42ad78294d0d
 ## explicit; go 1.21
 code.cloudfoundry.org/credhub-cli/credhub
 code.cloudfoundry.org/credhub-cli/credhub/auth
@@ -12,12 +12,12 @@ code.cloudfoundry.org/credhub-cli/errors
 # github.com/cloudfoundry/go-socks5 v0.0.0-20180221174514-54f73bdb8a8e
 ## explicit
 github.com/cloudfoundry/go-socks5
-# github.com/cloudfoundry/socks5-proxy v0.2.104
+# github.com/cloudfoundry/socks5-proxy v0.2.106
 ## explicit; go 1.21
 github.com/cloudfoundry/socks5-proxy
 # github.com/davecgh/go-spew v1.1.2-0.20180830191138-d8f796af33cc
 ## explicit
-# github.com/go-logr/logr v1.3.0
+# github.com/go-logr/logr v1.4.1
 ## explicit; go 1.18
 github.com/go-logr/logr
 github.com/go-logr/logr/funcr
@@ -31,7 +31,7 @@ github.com/google/go-cmp/cmp/internal/diff
 github.com/google/go-cmp/cmp/internal/flags
 github.com/google/go-cmp/cmp/internal/function
 github.com/google/go-cmp/cmp/internal/value
-# github.com/google/pprof v0.0.0-20231205033806-a5a03c77bf08
+# github.com/google/pprof v0.0.0-20231229205709-960ae82b1e42
 ## explicit; go 1.19
 github.com/google/pprof/profile
 # github.com/hashicorp/go-version v1.6.0
@@ -120,10 +120,9 @@ golang.org/x/text/internal/utf8internal
 golang.org/x/text/language
 golang.org/x/text/runes
 golang.org/x/text/transform
-# golang.org/x/tools v0.16.0
+# golang.org/x/tools v0.16.1
 ## explicit; go 1.18
 golang.org/x/tools/go/ast/inspector
-golang.org/x/tools/internal/typeparams
 # gopkg.in/yaml.v3 v3.0.1
 ## explicit
 gopkg.in/yaml.v3
