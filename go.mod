@@ -5,7 +5,7 @@ go 1.21.6
 require (
 	code.cloudfoundry.org/credhub-cli v0.0.0-20240115140241-36c6332535b4
 	github.com/onsi/ginkgo/v2 v2.15.0
-	github.com/onsi/gomega v1.31.0
+	github.com/onsi/gomega v1.31.1
 )
 
 require (
