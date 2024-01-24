@@ -131,14 +131,14 @@ resources:
     private_key: *github_ssh_key
     branch: master
 
-#! A second resource is necessary for Golang bumps because when we push a branch
-#! to this repo via this resource, the subsequent get steps will start tracking
-#! that branch, and not main as one would expect.
 - name: b-drats-bump-output
   type: git
   source:
     uri: git@github.com:cloudfoundry/bosh-disaster-recovery-acceptance-tests
     private_key: *github_ssh_key
+    commit_filter:
+      exclude:
+      - ;resource comment; This resource is used exclusively for pushing new changes
 
 - name: bosh-disaster-recovery-acceptance-tests-prs
   icon: source-pull
