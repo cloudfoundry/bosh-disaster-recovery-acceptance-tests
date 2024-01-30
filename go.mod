@@ -3,7 +3,7 @@ module github.com/cloudfoundry-incubator/bosh-disaster-recovery-acceptance-tests
 go 1.21.6
 
 require (
-	code.cloudfoundry.org/credhub-cli v0.0.0-20240122140356-433e4b9fc358
+	code.cloudfoundry.org/credhub-cli v0.0.0-20240129140404-5d5c1a8dbf29
 	github.com/onsi/ginkgo/v2 v2.15.0
 	github.com/onsi/gomega v1.31.1
 )
@@ -15,7 +15,7 @@ require (
 	github.com/go-logr/logr v1.4.1 // indirect
 	github.com/go-task/slim-sprig v0.0.0-20230315185526-52ccab3ef572 // indirect
 	github.com/google/go-cmp v0.6.0 // indirect
-	github.com/google/pprof v0.0.0-20240117000934-35fc243c5815 // indirect
+	github.com/google/pprof v0.0.0-20240125082051-42cd04596328 // indirect
 	github.com/hashicorp/go-version v1.6.0 // indirect
 	github.com/kr/text v0.2.0 // indirect
 	github.com/pmezard/go-difflib v1.0.1-0.20181226105442-5d4384ee4fb2 // indirect
