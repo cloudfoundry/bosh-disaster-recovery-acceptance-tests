@@ -294,6 +294,7 @@ jobs:
       action: release
 
 - name: bump-golang
+  serial: true
   plan:
   - in_parallel:
     - get: cryogenics-concourse-tasks
@@ -343,6 +344,7 @@ jobs:
         source-repo: b-drats-bump-output
 
 - name: bump-go-module
+  serial: true
   plan:
   - in_parallel:
     - get: daily-timer
