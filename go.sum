@@ -1,5 +1,5 @@
-code.cloudfoundry.org/credhub-cli v0.0.0-20240311141218-4307372180c7 h1:hSk+AzF3g8WmnngyZ4AikO/lwL/RPxsjlfSDSKElW4c=
-code.cloudfoundry.org/credhub-cli v0.0.0-20240311141218-4307372180c7/go.mod h1:J4krbK35GqAlobOwk+ZCvn4vwXPojiZBTbqZv1FKAqg=
+code.cloudfoundry.org/credhub-cli v0.0.0-20240318130158-1b4a84540c56 h1:6r5vIZGyZmL8qtfYIGLk+6CnLVYQVdElN3ZnaAOoTQQ=
+code.cloudfoundry.org/credhub-cli v0.0.0-20240318130158-1b4a84540c56/go.mod h1:+p5e6qfi7kOtNbwJoy+JCNcRiaBHaHCvbXl+eA59ksw=
 github.com/cloudfoundry/go-socks5 v0.0.0-20180221174514-54f73bdb8a8e h1:FQdRViaoDphGRfgrotl2QGsX1gbloe57dbGBS5CG6KY=
 github.com/cloudfoundry/go-socks5 v0.0.0-20180221174514-54f73bdb8a8e/go.mod h1:PXmcacyJB/pJjSxEl15IU6rEIKXrhZQRzsr0UTkgNNs=
 github.com/cloudfoundry/socks5-proxy v0.2.115 h1:X/JCvwguXw2bbxrjSfjbSMDVXdT0usoTV73gA1SO1S4=
