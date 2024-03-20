@@ -13,8 +13,9 @@ number_of_claim_env_retries: &number_of_claim_env_retries 5
 #! Secrets we need to run this pipeline
 #! ************************************
 cerberus: &cerberus
-  role_id: e3ec12b4-fee3-fab0-7e19-b3931c3251f0
-  secret_id: 30e7e91f-d88a-12ce-a705-f305929bedec
+  role_id: ((cerberus-auth.role_id))
+  secret_id: ((cerberus-auth.secret_id))
+cerberus_url: &cerberus_url ((cerberus-auth.url))
 
 shepherd_account_key: &shepherd_account_key ((cerberus:shepherd.sa_key))
 #! shepherd_account_key was needed on 2023-09-28 to claim shepherd environments. It was created using `shepherd create service-account` after logging in with WS1.
@@ -43,7 +44,7 @@ var_sources:
   config:
     auth_backend: approle
     auth_params: *cerberus
-    url: https://vault.console.cerberus.vmware.com/add164e1-f7fe-4e62-a548-a65690758636/
+    url: *cerberus_url
     path_prefix: secret
 
 groups:
