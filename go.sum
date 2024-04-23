@@ -1,5 +1,5 @@
-code.cloudfoundry.org/credhub-cli v0.0.0-20240415130328-ccf34f5b6270 h1:h98vN6/r060B5veMeqpZY15zQ3PgxipTo2iboDB1yzY=
-code.cloudfoundry.org/credhub-cli v0.0.0-20240415130328-ccf34f5b6270/go.mod h1:eqR0agvjaNm/Cb9yKOFO2uyV8sjkvcgm148Jg4WEQ4I=
+code.cloudfoundry.org/credhub-cli v0.0.0-20240422130708-a7f1bfa10430 h1:oMFtICHiekW6wQU+obPdyTt4HjXczJFgVHVNMXzlWl0=
+code.cloudfoundry.org/credhub-cli v0.0.0-20240422130708-a7f1bfa10430/go.mod h1:1/HH32rpdv9Jj4F8VimFgj/UK4b50L61WlFQ9BmRhcw=
 github.com/cloudfoundry/go-socks5 v0.0.0-20180221174514-54f73bdb8a8e h1:FQdRViaoDphGRfgrotl2QGsX1gbloe57dbGBS5CG6KY=
 github.com/cloudfoundry/go-socks5 v0.0.0-20180221174514-54f73bdb8a8e/go.mod h1:PXmcacyJB/pJjSxEl15IU6rEIKXrhZQRzsr0UTkgNNs=
 github.com/cloudfoundry/socks5-proxy v0.2.116 h1:1zm31wkXnOdL9pXbtFUTFc/viIYBjF2xjbCOi/bzyNA=
@@ -17,8 +17,8 @@ github.com/go-task/slim-sprig v0.0.0-20230315185526-52ccab3ef572 h1:tfuBGBXKqDEe
 github.com/go-task/slim-sprig v0.0.0-20230315185526-52ccab3ef572/go.mod h1:9Pwr4B2jHnOSGXyyzV8ROjYa2ojvAY6HCGYYfMoC3Ls=
 github.com/google/go-cmp v0.6.0 h1:ofyhxvXcZhMsU5ulbFiLKl/XBFqE1GSq7atu8tAmTRI=
 github.com/google/go-cmp v0.6.0/go.mod h1:17dUlkBOakJ0+DkrSSNjCkIjxS6bF9zb3elmeNGIjoY=
-github.com/google/pprof v0.0.0-20240409012703-83162a5b38cd h1:gbpYu9NMq8jhDVbvlGkMFWCjLFlqqEZjEmObmhUy6Vo=
-github.com/google/pprof v0.0.0-20240409012703-83162a5b38cd/go.mod h1:kf6iHlnVGwgKolg33glAes7Yg/8iWP8ukqeldJSO7jw=
+github.com/google/pprof v0.0.0-20240416155748-26353dc0451f h1:WpZiq8iqvGjJ3m3wzAVKL6+0vz7VkE79iSy9GII00II=
+github.com/google/pprof v0.0.0-20240416155748-26353dc0451f/go.mod h1:kf6iHlnVGwgKolg33glAes7Yg/8iWP8ukqeldJSO7jw=
 github.com/hashicorp/go-version v1.6.0 h1:feTTfFNnjP967rlCxM/I9g701jU+RN74YKx2mOkIeek=
 github.com/hashicorp/go-version v1.6.0/go.mod h1:fltr4n8CU8Ke44wwGCBoEymUuxUHl09ZGVZPK5anwXA=
 github.com/kr/pretty v0.3.1 h1:flRD4NNwYAUpkphVc1HcthR4KEIFJ65n8Mw5qdRn3LE=
