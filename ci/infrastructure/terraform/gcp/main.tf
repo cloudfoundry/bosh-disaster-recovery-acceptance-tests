@@ -8,17 +8,16 @@ variable "gcp_service_account_key" {
 
 variable "projectid" {
   type = string
-  default = "mapbu-cryogenics"
 }
 
 variable "region" {
   type = string
-  default = "europe-west1"
+  default = "us-west1"
 }
 
 variable "zone1" {
   type = string
-  default = "europe-west1-b"
+  default = "us-west1-b"
 }
 
 provider "google" {

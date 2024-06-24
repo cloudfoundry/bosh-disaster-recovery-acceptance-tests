@@ -1,19 +1,20 @@
+---
 platform: linux
+
 image_resource:
   type: registry-image
-  source:
-    repository: cryogenics/essentials
+  source: {repository: pcfplatformrecovery/backup-and-restore}
+
 inputs:
-  - name: bosh-disaster-recovery-acceptance-tests
-  - name: bbr-binary-release
-  - name: b-drats-integration-config
-  - name: bosh-vars-store
-    optional: true
-  - name: terraform-state
-    optional: true
+- name: bosh-disaster-recovery-acceptance-tests
+  path: src/github.com/cloudfoundry-incubator/bosh-disaster-recovery-acceptance-tests
+- name: bbr-binary-release
+- name: b-drats-integration-config
+- name: jumpbox-creds
+
 params:
   INTEGRATION_CONFIG_PATH: integration_config.json
-  BBR_BINARY: bbr-binary-release/bbr-[0-9]*-linux-amd64
   GINKGO_TIMEOUT: 24h0m0s
+
 run:
   path: bosh-disaster-recovery-acceptance-tests/ci/tasks/run-b-drats/task.sh

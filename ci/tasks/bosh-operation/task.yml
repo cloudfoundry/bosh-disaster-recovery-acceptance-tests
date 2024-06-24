@@ -7,13 +7,16 @@ image_resource:
     repository: pcfplatformrecovery/backup-and-restore
 
 inputs:
-- name: bosh-disaster-recovery-acceptance-tests-prs
-- name: bosh-state
+- name: bosh-disaster-recovery-acceptance-tests
 - name: bosh-deployment
+- name: director-creds
+- name: director-state
+- name: jumpbox-creds
 - name: terraform-state
 
 outputs:
-- name: bosh-state-updated
+- name: director-creds
+- name: director-state
 
 params:
   DIRECTOR_NAME:
@@ -23,4 +26,4 @@ params:
   BOSH_OPERATION: create-env # Set bosh command to run, e.g. create-env or delete-env
 
 run:
-  path: bosh-disaster-recovery-acceptance-tests-prs/ci/tasks/bosh-operation/task.sh
+  path: bosh-disaster-recovery-acceptance-tests/ci/tasks/bosh-operation/task.sh

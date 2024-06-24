@@ -8,14 +8,13 @@ image_resource:
 
 inputs:
 - name: terraform-state
-- name: bosh-vars-store
-- name: bosh-disaster-recovery-acceptance-tests-prs
+- name: director-creds
+- name: jumpbox-creds
+- name: bosh-disaster-recovery-acceptance-tests
 
 params:
-  BOSH_VARS_STORE_PATH:  # Path to bosh director vars-store YAML file
-  JUMPBOX_VARS_STORE_PATH:
   BOSH_CLIENT:
   RESURRECTION:
 
 run:
-  path: bosh-disaster-recovery-acceptance-tests-prs/ci/tasks/update-b-drats-resurrection/task.sh
+  path: bosh-disaster-recovery-acceptance-tests/ci/tasks/update-b-drats-resurrection/task.sh
