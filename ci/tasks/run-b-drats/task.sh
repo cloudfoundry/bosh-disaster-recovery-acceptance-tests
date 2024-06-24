@@ -2,7 +2,6 @@
 
 set -eu
 
-: "${BBR_BINARY:?}"
 : "${GINKGO_TIMEOUT:?}"
 
 export GINKGO_TIMEOUT
