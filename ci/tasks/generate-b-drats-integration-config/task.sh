@@ -20,9 +20,9 @@ credhub_ca_cert="$( bosh interpolate "director-creds/creds.yml" --path=/credhub_
 $( bosh interpolate "director-creds/creds.yml" --path=/uaa_ssl/ca )"
 stemcell_src="$( cat stemcell/url )"
 jumpbox_host="$(terraform output -state terraform-state/terraform.tfstate jumpbox-ip | jq -r .)"
-jumpbox_user="$jumpbox_user"
-jumpbox_pubkey="$jumpbox_pubkey"
-jumpbox_privkey="$jumpbox_privkey"
+jumpbox_user="jumpbox"
+jumpbox_pubkey="$(bosh interpolate --path /jumpbox_ssh/public_key "jumpbox-creds/creds.yml")"
+jumpbox_privkey="$(bosh interpolate --path /jumpbox_ssh/private_key "jumpbox-creds/creds.yml")"
 
 integration_config="{}"
 

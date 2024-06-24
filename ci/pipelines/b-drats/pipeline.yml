@@ -142,9 +142,9 @@ jobs:
       env_name: b-drats
       delete_on_failure: true
       vars:
-        project: cf-bosh-concourse
+        projectid: cf-bosh-concourse
         environment_name: b-drats
-        gcp_service_account_key: ((gcp/service_accounts/infrastructure.json_key))
+        gcp_service_account_key: ((gcp_credentials_json))
     get_params:
       output_statefile: true
   - task: jumpbox-create-env
@@ -154,7 +154,7 @@ jobs:
     params:
       ENVIRONMENT_NAME: "b-drats/jumpbox"
       BOSH_OPERATION: "create-env"
-      GCP_SERVICE_ACCOUNT_KEY: ((bosh_director.json_key))
+      GCP_SERVICE_ACCOUNT_KEY: ((gcp_credentials_json))
     ensure:
       in_parallel:
       - put: jumpbox-creds
@@ -172,7 +172,7 @@ jobs:
       JUMPBOX_ENVIRONMENT_NAME: "b-drats/jumpbox"
       DIRECTOR_NAME: "b-drats"
       BOSH_OPERATION: "create-env"
-      GCP_SERVICE_ACCOUNT_KEY: ((bosh_director.json_key))
+      GCP_SERVICE_ACCOUNT_KEY: ((gcp_credentials_json))
     ensure:
       in_parallel:
       - put: director-creds
@@ -261,7 +261,7 @@ jobs:
       JUMPBOX_ENVIRONMENT_NAME: "b-drats/jumpbox"
       DIRECTOR_NAME: "b-drats"
       BOSH_OPERATION: "delete-env"
-      GCP_SERVICE_ACCOUNT_KEY: ((bosh_director.json_key))
+      GCP_SERVICE_ACCOUNT_KEY: ((gcp_credentials_json))
     ensure:
       in_parallel:
       - put: director-creds
@@ -277,7 +277,7 @@ jobs:
     params:
       ENVIRONMENT_NAME: "b-drats/jumpbox"
       BOSH_OPERATION: "delete-env"
-      GCP_SERVICE_ACCOUNT_KEY: ((bosh_director.json_key))
+      GCP_SERVICE_ACCOUNT_KEY: ((gcp_credentials_json))
     ensure:
       in_parallel:
       - put: jumpbox-creds
@@ -292,7 +292,8 @@ jobs:
       env_name: b-drats
       action: destroy
       vars:
+        projectid: cf-bosh-concourse
         environment_name: b-drats
-        gcp_service_account_key: ((gcp/service_accounts/infrastructure.json_key))
+        gcp_service_account_key: ((gcp_credentials_json))
     get_params:
       action: destroy

@@ -10,6 +10,7 @@ inputs:
 - name: bosh-disaster-recovery-acceptance-tests
 - name: terraform-state
 - name: director-creds
+- name: jumpbox-creds
 - name: stemcell
 
 outputs:
