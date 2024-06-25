@@ -33,7 +33,8 @@ func RunCommandInDirectorVMSuccessfullyWithFailureMessage(description string, co
 }
 
 func RunBBRCommand(description string, config Config, args ...string) *gexec.Session {
-	return RunCommandWithStream(description, os.Stdout, config.BBRBinaryPath, args...)
+	commandWithBoshAllProxy := fmt.Sprintf("%s %s", getBoshAllProxy(config), config.BBRBinaryPath)
+	return RunCommandWithStream(description, os.Stdout, commandWithBoshAllProxy, args...)
 }
 
 func RunBBRCommandSuccessfullyWithFailureMessage(description string, config Config, args ...string) {
