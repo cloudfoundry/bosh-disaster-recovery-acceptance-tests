@@ -6,7 +6,7 @@ echo "$GCP_SERVICE_ACCOUNT_KEY" > "$gcp_version_account_key"
 
 function terraform_output() {
   local var="$1"
-  terraform output -state=terraform-state/terraform.tfstate "$var"
+  jq -r ".\"${var}\"" terraform-state/metadata
 }
 
 internal_gw="$( terraform_output internal-gw )"

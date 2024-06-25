@@ -9,7 +9,7 @@ bosh interpolate --path /jumpbox_ssh/private_key "jumpbox-creds/creds.yml" > "$j
 
 function terraform_output() {
   local var="$1"
-  terraform output -state=terraform-state/terraform.tfstate "$var" | jq -r .
+  jq -r ".\"${var}\"" terraform-state/metadata
 }
 
 jumpbox_ip="$(terraform_output jumpbox-ip)"
@@ -23,7 +23,6 @@ internal_cidr="$(terraform_output director-subnetwork-cidr-range)"
 project_id="$(terraform_output projectid)"
 
 export BOSH_ALL_PROXY="ssh+socks5://jumpbox@${jumpbox_ip}:22?private-key=${jumpbox_private_key}"
-
 
 pushd bosh-deployment
   bosh "$BOSH_OPERATION" bosh.yml \

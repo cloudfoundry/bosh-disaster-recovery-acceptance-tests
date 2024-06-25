@@ -10,6 +10,7 @@ resource_types:
   source:
     repository: frodenas/gcs-resource
     username: ((docker.username))
+    password: ((docker.password))
 
 resources:
 - name: bosh-deployment
@@ -101,16 +102,32 @@ resources:
     stop: 7:30 -0700
     days: [ Saturday ]
 
+- name: golang-release-registry-image
+  type: registry-image
+  source:
+    repository: bosh/golang-release
+    username: ((docker.username))
+    password: ((docker.password))
+
+- name: bosh-integration-registry-image
+  type: registry-image
+  source:
+    repository: bosh/integration
+    username: ((docker.username))
+    password: ((docker.password))
+
 jobs:
 - name: bump-deps
   plan:
   - in_parallel:
     - get: bosh-disaster-recovery-acceptance-tests
     - get: golang-release
+    - get: golang-release-registry-image
     - get: weekly
       trigger: true
   - task: bump-deps
     file: golang-release/ci/tasks/shared/bump-deps.yml
+    image: golang-release-registry-image
     input_mapping:
       input_repo: bosh-disaster-recovery-acceptance-tests
     output_mapping:
@@ -127,6 +144,7 @@ jobs:
   plan:
   - in_parallel:
     - get: bosh-deployment
+    - get: bosh-integration-registry-image
     - get: jumpbox-deployment
     - get: bosh-disaster-recovery-acceptance-tests
       trigger: true
@@ -149,6 +167,7 @@ jobs:
       output_statefile: true
   - task: jumpbox-create-env
     file: bosh-disaster-recovery-acceptance-tests/ci/tasks/jumpbox-operation/task.yml
+    image: bosh-integration-registry-image
     input_mapping:
       terraform-state: terraform
     params:
@@ -165,6 +184,7 @@ jobs:
           file: jumpbox-state/state.json
   - task: bosh-create-env
     file: bosh-disaster-recovery-acceptance-tests/ci/tasks/bosh-operation/task.yml
+    image: bosh-integration-registry-image
     input_mapping:
       terraform-state: terraform
     params:
@@ -183,18 +203,12 @@ jobs:
           file: director-state/state.json
   - task: update-b-drats-cloud-config
     file: bosh-disaster-recovery-acceptance-tests/ci/tasks/update-b-drats-cloud-config/task.yml
+    image: bosh-integration-registry-image
     input_mapping:
       cloud-config: bosh-deployment
       terraform-state: terraform
     params:
       CLOUD_CONFIG_PATH: gcp/cloud-config.yml
-      BOSH_CLIENT: admin
-  - task: update-b-drats-resurrection
-    file: bosh-disaster-recovery-acceptance-tests/ci/tasks/update-b-drats-resurrection/task.yml
-    input_mapping:
-      terraform-state: terraform
-    params:
-      RESURRECTION: "off"
       BOSH_CLIENT: admin
 
 - name: run-b-drats
@@ -219,8 +233,10 @@ jobs:
     - get: gcs-stemcell
     - get: director-creds
     - get: jumpbox-creds
+    - get: bosh-integration-registry-image
   - task: generate-b-drats-integration-config
     file: bosh-disaster-recovery-acceptance-tests/ci/tasks/generate-b-drats-integration-config/task.yml
+    image: bosh-integration-registry-image
     input_mapping:
       terraform-state: terraform
       stemcell: gcs-stemcell
@@ -228,6 +244,7 @@ jobs:
       CREDHUB_SERVER: https://10.0.0.6:8844
   - task: run-b-drats
     file: bosh-disaster-recovery-acceptance-tests/ci/tasks/run-b-drats/task.yml
+    image: bosh-integration-registry-image
 
 - name: destroy-b-drats
   serial: true
@@ -252,8 +269,10 @@ jobs:
     - get: director-state
     - get: jumpbox-creds
     - get: jumpbox-state
+    - get: bosh-integration-registry-image
   - task: bosh-delete-env
     file: bosh-disaster-recovery-acceptance-tests/ci/tasks/bosh-operation/task.yml
+    image: bosh-integration-registry-image
     input_mapping:
       terraform-state: terraform
     params:
@@ -272,6 +291,7 @@ jobs:
           file: director-state/state.json
   - task: jumpbox-delete-env
     file: bosh-disaster-recovery-acceptance-tests/ci/tasks/jumpbox-operation/task.yml
+    image: bosh-integration-registry-image
     input_mapping:
       terraform-state: terraform
     params:

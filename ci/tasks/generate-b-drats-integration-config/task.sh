@@ -3,7 +3,12 @@
 
 set -euo pipefail
 
-bosh_host="$(terraform output -state terraform-state/terraform.tfstate director-internal-ip | jq -r .)"
+function terraform_output() {
+  local var="$1"
+  jq -r ".\"${var}\"" terraform-state/metadata
+}
+
+bosh_host="$(terraform_output director-internal-ip)"
 bosh_ssh_username="$BOSH_SSH_USERNAME"
 bosh_ssh_private_key="$( bosh int --path=/jumpbox_ssh/private_key "director-creds/creds.yml" )"
 timeout_in_minutes="$TIMEOUT_IN_MINUTES"
@@ -19,7 +24,7 @@ credhub_server="$CREDHUB_SERVER"
 credhub_ca_cert="$( bosh interpolate "director-creds/creds.yml" --path=/credhub_tls/ca )
 $( bosh interpolate "director-creds/creds.yml" --path=/uaa_ssl/ca )"
 stemcell_src="$( cat stemcell/url )"
-jumpbox_host="$(terraform output -state terraform-state/terraform.tfstate jumpbox-ip | jq -r .)"
+jumpbox_host="$(terraform_output jumpbox-ip)"
 jumpbox_user="jumpbox"
 jumpbox_pubkey="$(bosh interpolate --path /jumpbox_ssh/public_key "jumpbox-creds/creds.yml")"
 jumpbox_privkey="$(bosh interpolate --path /jumpbox_ssh/private_key "jumpbox-creds/creds.yml")"

@@ -6,7 +6,7 @@ bosh interpolate --path /jumpbox_ssh/private_key "jumpbox-creds/creds.yml" > "$j
 
 function terraform_output() {
   local var="$1"
-  terraform output -state=terraform-state/terraform.tfstate "$var" | jq -r .
+  jq -r ".\"${var}\"" terraform-state/metadata
 }
 
 bosh_host="$( terraform_output director-internal-ip )"
