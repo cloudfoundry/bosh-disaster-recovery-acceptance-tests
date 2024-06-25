@@ -20,19 +20,6 @@ if cat $INTEGRATION_CONFIG_PATH | jq .jumpbox_host; then
   echo -e "$( cat $INTEGRATION_CONFIG_PATH | jq .jumpbox_privkey -r)" > ${PK_PATH}
 
   export CREDHUB_PROXY="ssh+socks5://${USER}@${HOST}:22?private-key=${PK_PATH}"
-
-  cat << EOF > ~/.ssh/config
-Host jumphost
-  HostName ${HOST}
-  User ${USER}
-  IdentityFile ${PK_PATH}
-
-  StrictHostKeyChecking no
-### Second jumphost. Only reachable via jumphost1.example.org
-Host ${BOSH_HOST}
-  HostName ${BOSH_HOST}
-  ProxyJump jumphost
-EOF
 fi
 
 ./bosh-disaster-recovery-acceptance-tests/scripts/_run_acceptance_tests.sh
