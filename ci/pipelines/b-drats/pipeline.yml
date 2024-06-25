@@ -210,6 +210,14 @@ jobs:
     params:
       CLOUD_CONFIG_PATH: gcp/cloud-config.yml
       BOSH_CLIENT: admin
+  - task: update-b-drats-resurrection
+    file: bosh-disaster-recovery-acceptance-tests/ci/tasks/update-b-drats-resurrection/task.yml
+    image: bosh-integration-registry-image
+    input_mapping:
+      terraform-state: terraform
+    params:
+      RESURRECTION: "off"
+      BOSH_CLIENT: admin
 
 - name: run-b-drats
   serial: true

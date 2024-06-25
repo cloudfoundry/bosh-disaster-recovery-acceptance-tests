@@ -1,0 +1,15 @@
+---
+platform: linux
+
+inputs:
+- name: terraform-state
+- name: director-creds
+- name: jumpbox-creds
+- name: bosh-disaster-recovery-acceptance-tests
+
+params:
+  BOSH_CLIENT:
+  RESURRECTION:
+
+run:
+  path: bosh-disaster-recovery-acceptance-tests/ci/tasks/update-b-drats-resurrection/task.sh
