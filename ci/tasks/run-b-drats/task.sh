@@ -8,7 +8,7 @@ export GINKGO_TIMEOUT
 
 export INTEGRATION_CONFIG_PATH="$PWD/b-drats-integration-config/${INTEGRATION_CONFIG_PATH}"
 
-BBR_BINARY_PATH="$(ls bbr-binary-release/bbr-[0-9]*-linux-amd64)"
+BBR_BINARY_PATH="${PWD}/$(ls bbr-binary-release/bbr-[0-9]*-linux-amd64)"
 chmod +x "$BBR_BINARY_PATH"
 export BBR_BINARY_PATH
 
