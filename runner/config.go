@@ -39,6 +39,12 @@ type CredhubConfig struct {
 	Server       string
 }
 
+type jumpbox struct {
+	host    string
+	privkey string
+	user    string
+}
+
 func NewConfig(integrationConfig acceptance.IntegrationConfig, bbrBinaryPath, artifactDirPath string) (Config, error) {
 	privateKeyPath, err := integrationConfig.SSHPrivateKeyPath()
 	if err != nil {
@@ -71,18 +77,8 @@ func NewConfig(integrationConfig acceptance.IntegrationConfig, bbrBinaryPath, ar
 	}
 
 	var jb *jumpbox
-	if integrationConfig.DeployJumpbox {
-		jb = &jumpbox{
-			network: defaultNetwork,
-			vmType:  defaultVMType,
-			az:      defaultAZ,
-		}
-	}
 	if integrationConfig.JumpboxHost != "" && integrationConfig.JumpboxPrivKey != "" && integrationConfig.JumpboxUser != "" {
 		jb = &jumpbox{
-			network: defaultNetwork,
-			vmType:  defaultVMType,
-			az:      defaultAZ,
 			privkey: integrationConfig.JumpboxPrivKey,
 			host:    integrationConfig.JumpboxHost,
 			user:    integrationConfig.JumpboxUser,

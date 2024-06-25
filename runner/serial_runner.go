@@ -5,7 +5,10 @@ import (
 	"github.com/cloudfoundry-incubator/bosh-disaster-recovery-acceptance-tests/fixtures"
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
+	"os"
 	"path"
+	"path/filepath"
+	"strings"
 )
 
 func RunBoshDisasterRecoveryAcceptanceTestsSerially(config Config, testCases []TestCase) {
@@ -19,12 +22,12 @@ func RunBoshDisasterRecoveryAcceptanceTestsSerially(config Config, testCases []T
 
 		Context(fmt.Sprintf("test case %s", testCase.Name()), func() {
 			var (
-				artifactPath       commonArtifactPath
+				artifactPath       string
 				boshPrivateKeyPath string
 			)
 
 			BeforeEach(func() {
-				artifactPath = newArtifactPath(config)
+				artifactPath = GinkgoT().TempDir()
 
 				// When running with a jumpbox, the private key is already copied across
 				boshPrivateKeyPath = config.BOSH.SSHPrivateKeyPath
@@ -53,7 +56,7 @@ func RunBoshDisasterRecoveryAcceptanceTestsSerially(config Config, testCases []T
 				})
 
 				By("Cleanup bbr director backup artifact", func() {
-					artifactPath.cleanup()
+					os.RemoveAll(artifactPath)
 				})
 			})
 
@@ -72,7 +75,7 @@ func RunBoshDisasterRecoveryAcceptanceTestsSerially(config Config, testCases []T
 							config.BOSH.Host,
 							config.BOSH.SSHUsername,
 							boshPrivateKeyPath,
-							artifactPath.path(),
+							artifactPath,
 						),
 					)
 				})
@@ -82,7 +85,14 @@ func RunBoshDisasterRecoveryAcceptanceTestsSerially(config Config, testCases []T
 					testCase.AfterBackup(config)
 				})
 
-				artifactToRestore := artifactPath.firstMatch(config.BOSH.Host) // prints output
+				var artifactToRestore string
+				entries, err := os.ReadDir(artifactPath)
+				Expect(err).NotTo(HaveOccurred())
+				for _, e := range entries {
+					if strings.Contains(e.Name(), config.BOSH.Host) {
+						artifactToRestore = filepath.Join(artifactPath, e.Name())
+					}
+				}
 
 				By("restoring", func() {
 					RunBBRCommandSuccessfullyWithFailureMessage(
@@ -112,12 +122,4 @@ func RunBoshDisasterRecoveryAcceptanceTestsSerially(config Config, testCases []T
 			})
 		})
 	}
-
-	BeforeAll(func() {
-		config.Jumpbox.Deploy(config)
-	})
-
-	AfterAll(func() {
-		config.Jumpbox.Cleanup(config)
-	})
 }

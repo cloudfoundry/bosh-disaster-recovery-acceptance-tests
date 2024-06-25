@@ -20,7 +20,6 @@ type IntegrationConfig struct {
 	DeploymentNetwork   string `json:"deployment_network"`
 	DeploymentAZ        string `json:"deployment_az"`
 	StemcellSrc         string `json:"stemcell_src"`
-	DeployJumpbox       bool   `json:"deploy_jumpbox"`
 	JumpboxHost         string `json:"jumpbox_host"`
 	JumpboxUser         string `json:"jumpbox_user"`
 	JumpboxPrivKey      string `json:"jumpbox_privkey"`

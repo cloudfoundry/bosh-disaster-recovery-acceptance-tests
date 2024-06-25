@@ -4,6 +4,7 @@ import (
 	"io"
 	"os"
 	"os/exec"
+	"path/filepath"
 	"strings"
 
 	"fmt"
@@ -15,10 +16,6 @@ import (
 
 func RunBoshCommand(description string, config Config, args ...string) *gexec.Session {
 	return RunCommandWithStream(description, GinkgoWriter, getBoshBaseCommand(config), args...)
-}
-
-func RunBoshCommandViaSsh(description string, config Config, sshBaseCommand string, args ...string) *gexec.Session {
-	return RunCommandWithStream(description, GinkgoWriter, fmt.Sprintf("%s -c \"%s\"", sshBaseCommand, getBoshBaseCommand(config)), args...)
 }
 
 func RunBoshCommandSuccessfullyWithFailureMessage(description string, config Config, args ...string) *gexec.Session {
@@ -36,10 +33,6 @@ func RunCommandInDirectorVMSuccessfullyWithFailureMessage(description string, co
 }
 
 func RunBBRCommand(description string, config Config, args ...string) *gexec.Session {
-	if config.Jumpbox != nil {
-		return config.Jumpbox.RunBBR(description, config, args...)
-	}
-
 	return RunCommandWithStream(description, os.Stdout, config.BBRBinaryPath, args...)
 }
 
@@ -89,12 +82,12 @@ func RunCommandWithStream(description string, writer io.Writer, cmd string, args
 }
 func getBoshAllProxy(config Config) string {
 	// ssh+socks5://ubuntu@34.72.88.156:22?private-key=/tmp/tmp.bBURxmHm5j
-	if config.Jumpbox != nil && config.Jumpbox.HostIsSet() {
-		keyPath, err := config.Jumpbox.WriteKeyFile()
+	if config.Jumpbox != nil && config.Jumpbox.host != "" {
+		keyPath, err := jumpboxKeyFile(config.Jumpbox.privkey)
 		if err != nil {
 			Fail("failed writing jumphost keyfile")
 		}
-		return fmt.Sprintf("BOSH_ALL_PROXY=ssh+socks5://%s:22?private-key=%s", config.Jumpbox.GetUserHost(), keyPath)
+		return fmt.Sprintf("BOSH_ALL_PROXY=ssh+socks5://%s@%s:22?private-key=%s", config.Jumpbox.user, config.Jumpbox.host, keyPath)
 	}
 	return ""
 }
@@ -112,4 +105,14 @@ func getBoshBaseCommand(config Config) string {
 		config.BOSH.Client,
 		config.BOSH.ClientSecret,
 		config.BOSH.CACertPath)
+}
+
+func jumpboxKeyFile(privateKey string) (string, error) {
+	d, err := os.MkdirTemp("", "drats")
+	if err != nil {
+		return "", err
+	}
+	fname := filepath.Join(d, "key")
+	err = os.WriteFile(fname, []byte(privateKey), 0400)
+	return fname, err
 }

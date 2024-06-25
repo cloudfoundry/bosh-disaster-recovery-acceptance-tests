@@ -6,11 +6,7 @@ set -eu
 
 export GINKGO_TIMEOUT
 
-GOPATH="$PWD"
-PATH="${PATH}:${GOPATH}/bin"
-INTEGRATION_CONFIG_PATH="$PWD/b-drats-integration-config/${INTEGRATION_CONFIG_PATH}"
-
-export GOPATH PATH INTEGRATION_CONFIG_PATH 
+export INTEGRATION_CONFIG_PATH="$PWD/b-drats-integration-config/${INTEGRATION_CONFIG_PATH}"
 
 BBR_BINARY_PATH="$(ls bbr-binary-release/bbr-[0-9]*-linux-amd64)"
 chmod +x "$BBR_BINARY_PATH"
@@ -23,9 +19,9 @@ if cat $INTEGRATION_CONFIG_PATH | jq .jumpbox_host; then
   PK_PATH=$(mktemp)
   echo -e "$( cat $INTEGRATION_CONFIG_PATH | jq .jumpbox_privkey -r)" > ${PK_PATH}
 
-  export CREDHUB_PROXY=ssh+socks5://${USER}@${HOST}:22?private-key=${PK_PATH}
-cat << EOF > ~/.ssh/config
+  export CREDHUB_PROXY="ssh+socks5://${USER}@${HOST}:22?private-key=${PK_PATH}"
 
+  cat << EOF > ~/.ssh/config
 Host jumphost
   HostName ${HOST}
   User ${USER}
@@ -40,4 +36,3 @@ EOF
 fi
 
 ./bosh-disaster-recovery-acceptance-tests/scripts/_run_acceptance_tests.sh
-
