@@ -26,8 +26,8 @@ Please refer to our b-drats [pipeline definition](ci/pipelines/b-drats/pipeline.
     ```json
     {
       "bosh_host": "director-address",
-      "bosh_ssh_username": "ssh-username",
-      "bosh_ssh_private_key": "bosh-ssh-private-key",
+      "bosh_agent_endpoint": "https://mbus:AGENT_PASSWORD@10.0.0.3:6868",
+      "bosh_agent_certificate": "bosh-agent-ca",
       "bosh_client": "bosh-client-name",
       "bosh_client_secret": "bosh-client-secret",
       "bosh_ca_cert": "bosh-ca-cert",
@@ -51,8 +51,8 @@ Please refer to our b-drats [pipeline definition](ci/pipelines/b-drats/pipeline.
 ## Integration Config Variables
 
 * `bosh_host` - the BOSH director hostname
-* `bosh_ssh_username` - the BOSH director VM SSH username
-* `bosh_ssh_private_key` - the BOSH director VM SSH private key
+* `bosh_agent_endpoint` - the BOSH director agent endpoint. Typically https://mbus:AGENT_PASSWORD@DIRECTOR_IP:6868
+* `bosh_agent_certificate` - the CA used by the BOSH agent on the BOSH director VM
 * `bosh_client` - the BOSH director API client
 * `bosh_client_secret` - the BOSH director API client secret 
 * `bosh_ca_cert` - the BOSH director API CA certificate

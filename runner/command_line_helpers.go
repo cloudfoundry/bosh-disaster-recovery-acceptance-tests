@@ -22,14 +22,23 @@ func RunBoshCommandSuccessfullyWithFailureMessage(description string, config Con
 	return RunCommandSuccessfullyWithFailureMessage(description, GinkgoWriter, getBoshBaseCommand(config), args...)
 }
 
-func RunCommandInDirectorVM(description string, config Config, cmd string, args ...string) *gexec.Session {
-	return runCommandWithStreamInDirectorVM(description, GinkgoWriter, config, cmd, args...)
+func RunCommandInDirectorVM(description string, config Config, cmd string) *gexec.Session {
+	boshCommand := fmt.Sprintf(
+		"%s "+
+			"bosh "+
+			"--agent-endpoint=%s "+
+			"--agent-certificate=\"%s\""+
+			"-c \"%s\"",
+		getBoshAllProxy(config),
+		config.BOSH.AgentEndpoint,
+		config.BOSH.AgentCertificate,
+		cmd)
+	return RunCommandSuccessfullyWithFailureMessage(description, GinkgoWriter, boshCommand)
 }
 
-func RunCommandInDirectorVMSuccessfullyWithFailureMessage(description string, config Config, cmd string, args ...string) *gexec.Session {
-	session := runCommandWithStreamInDirectorVM(description, GinkgoWriter, config, cmd, args...)
+func RunCommandInDirectorVMSuccessfullyWithFailureMessage(description string, config Config, cmd string) {
+	session := RunCommandInDirectorVM(description, config, cmd)
 	Expect(session).To(gexec.Exit(0), "Command errored: "+description)
-	return session
 }
 
 func RunBBRCommand(description string, config Config, args ...string) *gexec.Session {
@@ -45,27 +54,6 @@ func RunBBRCommandSuccessfullyWithFailureMessage(description string, config Conf
 func RunCommandSuccessfullyWithFailureMessage(description string, writer io.Writer, cmd string, args ...string) *gexec.Session {
 	session := RunCommandWithStream(description, writer, cmd, args...)
 	Expect(session).To(gexec.Exit(0), "Command errored: "+description)
-	return session
-}
-
-func runCommandWithStreamInDirectorVM(description string, writer io.Writer, config Config, cmd string, args ...string) *gexec.Session {
-	cmdToRunArgs := strings.Join(args, " ")
-	cmdToRun := cmd + " " + cmdToRunArgs
-
-	command := exec.Command(
-		"ssh",
-		config.BOSH.Host,
-		"-o", "UserKnownHostsFile=/dev/null",
-		"-o", "StrictHostKeyChecking=no",
-		"-l", config.BOSH.SSHUsername,
-		"-i", config.BOSH.SSHPrivateKeyPath,
-		cmdToRun,
-	)
-	session, err := gexec.Start(command, writer, writer)
-
-	Expect(err).ToNot(HaveOccurred())
-	Eventually(session).Should(gexec.Exit(), "Command timed out: "+description)
-	fmt.Fprintln(writer, "")
 	return session
 }
 

@@ -32,7 +32,6 @@ pushd bosh-deployment
   --ops-file gcp/cpi.yml \
   --ops-file uaa.yml \
   --ops-file credhub.yml \
-  --ops-file jumpbox-user.yml \
   --ops-file bbr.yml \
   --ops-file ../bosh-disaster-recovery-acceptance-tests/ci/infrastructure/opsfiles/gcp/bosh-director-ephemeral-ip-ops.yml \
   --var "director_name=${DIRECTOR_NAME}" \

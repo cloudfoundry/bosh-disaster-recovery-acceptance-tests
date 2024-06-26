@@ -9,8 +9,8 @@ function terraform_output() {
 }
 
 bosh_host="$(terraform_output director-internal-ip)"
-bosh_ssh_username="$BOSH_SSH_USERNAME"
-bosh_ssh_private_key="$( bosh int --path=/jumpbox_ssh/private_key "director-creds/creds.yml" )"
+bosh_agent_endpoint="https://mbus:$( bosh int --path=/mbus_bootstrap_password "director-creds/creds.yml" )@${bosh_host}:6868"
+bosh_agent_certificate="$( bosh int --path=/mbus_bootstrap_ssl/ca "director-creds/creds.yml" )"
 timeout_in_minutes="$TIMEOUT_IN_MINUTES"
 bosh_client="$BOSH_CLIENT"
 bosh_client_secret="$( bosh int --path=/admin_password "director-creds/creds.yml" )"
@@ -31,7 +31,7 @@ jumpbox_privkey="$(bosh interpolate --path /jumpbox_ssh/private_key "jumpbox-cre
 
 integration_config="{}"
 
-string_vars="bosh_host bosh_ssh_username bosh_ssh_private_key bosh_client bosh_client_secret bosh_ca_cert stemcell_src credhub_client_secret credhub_client credhub_ca_cert credhub_server jumpbox_host jumpbox_user jumpbox_pubkey jumpbox_privkey"
+string_vars="bosh_host bosh_agent_endpoint bosh_agent_certificate bosh_client bosh_client_secret bosh_ca_cert stemcell_src credhub_client_secret credhub_client credhub_ca_cert credhub_server jumpbox_host jumpbox_user jumpbox_pubkey jumpbox_privkey"
 for var in $string_vars
 do
   integration_config=$(echo ${integration_config} | jq ".${var}=\"${!var}\"")
