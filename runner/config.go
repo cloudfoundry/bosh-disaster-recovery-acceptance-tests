@@ -23,13 +23,13 @@ type CloudConfig struct {
 }
 
 type BOSHConfig struct {
-	Host             string
-	AgentEndpoint    string
-	AgentCertificate string
-	Client           string
-	ClientSecret     string
-	CACertPath       string
-	CloudConfig      CloudConfig
+	Host              string
+	SSHUsername       string
+	SSHPrivateKeyPath string
+	Client            string
+	ClientSecret      string
+	CACertPath        string
+	CloudConfig       CloudConfig
 }
 
 type CredhubConfig struct {
@@ -46,6 +46,11 @@ type jumpbox struct {
 }
 
 func NewConfig(integrationConfig acceptance.IntegrationConfig, bbrBinaryPath, artifactDirPath string) (Config, error) {
+	privateKeyPath, err := integrationConfig.SSHPrivateKeyPath()
+	if err != nil {
+		return Config{}, err
+	}
+
 	caCertPath, err := integrationConfig.CACertPath()
 	if err != nil {
 		return Config{}, err
@@ -82,12 +87,12 @@ func NewConfig(integrationConfig acceptance.IntegrationConfig, bbrBinaryPath, ar
 
 	return Config{
 		BOSH: BOSHConfig{
-			Host:             integrationConfig.Host,
-			AgentEndpoint:    integrationConfig.BOSHAgentEndpoint,
-			AgentCertificate: integrationConfig.BOSHAgentCertificate,
-			Client:           integrationConfig.BOSHClient,
-			ClientSecret:     integrationConfig.BOSHClientSecret,
-			CACertPath:       caCertPath,
+			Host:              integrationConfig.Host,
+			SSHUsername:       integrationConfig.SSHUsername,
+			SSHPrivateKeyPath: privateKeyPath,
+			Client:            integrationConfig.BOSHClient,
+			ClientSecret:      integrationConfig.BOSHClientSecret,
+			CACertPath:        caCertPath,
 			CloudConfig: CloudConfig{
 				DefaultVMType:  defaultVMType,
 				DefaultNetwork: defaultNetwork,

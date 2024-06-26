@@ -58,15 +58,16 @@ func (t TruncateDBBlobstoreTestcase) AfterBackup(config Config) {
 	RunCommandInDirectorVMSuccessfullyWithFailureMessage(
 		"pre-start all jobs",
 		config,
-		"sudo bash -c 'for pre in $(ls /var/vcap/jobs/**/bin/pre-start| grep -v monit); do $pre; done'",
+		"sudo bash -c",
+		"'for pre in $(ls /var/vcap/jobs/**/bin/pre-start| grep -v monit); do $pre; done'",
 	)
 
 	fmt.Println("Waiting for  all jobs to finish pre-start")
 	RunCommandInDirectorVMSuccessfullyWithFailureMessage(
 		"pre-start all jobs",
 		config,
-		"sudo bash -c "+
-			`'while pgrep pre-start; do sleep 1; echo "waiting for pre-start to finish"; done'`,
+		"sudo bash -c",
+		`'while pgrep pre-start; do sleep 1; echo "waiting for pre-start to finish"; done'`,
 	)
 
 	monitStart(config, "postgres")

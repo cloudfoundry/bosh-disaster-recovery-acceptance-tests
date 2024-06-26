@@ -12,6 +12,7 @@ outputs:
 - name: b-drats-integration-config
 
 params:
+  BOSH_SSH_USERNAME: jumpbox
   TIMEOUT_IN_MINUTES: 30
   BOSH_CLIENT: admin
   CREDHUB_CLIENT: credhub-admin
