@@ -21,7 +21,7 @@ if cat $INTEGRATION_CONFIG_PATH | jq .jumpbox_host; then
 
   export CREDHUB_PROXY="ssh+socks5://${USER}@${HOST}:22?private-key=${PK_PATH}"
 
-  mkdir ~/.ssh
+  mkdir -p ~/.ssh
   cat << EOF > ~/.ssh/config
 Host jumphost
   HostName ${HOST}
