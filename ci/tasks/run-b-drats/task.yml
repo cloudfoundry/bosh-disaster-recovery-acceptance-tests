@@ -8,6 +8,7 @@ inputs:
 
 params:
   INTEGRATION_CONFIG_PATH: integration_config.json
+  BBR_BINARY: bbr-binary-release/bbr-[0-9]*-linux-amd64
   GINKGO_TIMEOUT: 24h0m0s
 
 run:

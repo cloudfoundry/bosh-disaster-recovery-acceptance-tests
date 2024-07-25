@@ -2,13 +2,15 @@
 
 set -eu
 
+: "${BBR_BINARY:?}"
 : "${GINKGO_TIMEOUT:?}"
 
 export GINKGO_TIMEOUT
 
 export INTEGRATION_CONFIG_PATH="$PWD/b-drats-integration-config/${INTEGRATION_CONFIG_PATH}"
 
-BBR_BINARY_PATH="${PWD}/$(ls bbr-binary-release/bbr-[0-9]*-linux-amd64)"
+# shellcheck disable=SC2086
+BBR_BINARY_PATH="$(ls ${PWD}/${BBR_BINARY})"
 chmod +x "$BBR_BINARY_PATH"
 export BBR_BINARY_PATH
 
