@@ -21,8 +21,7 @@ update:
 
 instance_groups:
 - name: small-job
-  azs:
-  - name: "((az_name))"
+  azs: ["((az_name))"]
   instances: 1
   jobs:
     - name: zookeeper
