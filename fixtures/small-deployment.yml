@@ -21,12 +21,12 @@ update:
 
 instance_groups:
 - name: small-job
-  azs: [((az_name))]
+  azs: ["((az_name))"]
   instances: 1
   jobs:
     - name: zookeeper
       release: zookeeper
   stemcell: default
-  vm_type: ((vm_type))
+  vm_type: "((vm_type))"
   networks:
-    - {name: ((network_name))}
+    - {name: "((network_name))"}
