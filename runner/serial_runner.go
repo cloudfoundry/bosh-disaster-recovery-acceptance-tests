@@ -13,7 +13,6 @@ import (
 )
 
 func RunBoshDisasterRecoveryAcceptanceTestsSerially(config Config, testCases []TestCase) {
-	fmt.Println("Running testcases: ")
 	for _, t := range testCases {
 		fmt.Println(t.Name())
 	}
@@ -100,8 +99,7 @@ func RunBoshDisasterRecoveryAcceptanceTestsSerially(config Config, testCases []T
 						"bbr director restore",
 						config,
 						fmt.Sprintf(
-							"director --host %s --username %s --private-key-path %s "+
-								"restore --artifact-path %s",
+							"director --host %s --username %s --private-key-path %s restore --artifact-path %s",
 							config.BOSH.Host,
 							config.BOSH.SSHUsername,
 							boshPrivateKeyPath,

@@ -11,11 +11,11 @@ var _ = Describe("TestCaseFilter", func() {
 		var filter runner.IntegrationConfigTestCaseFilter
 
 		BeforeEach(func() {
-			filter = runner.IntegrationConfigTestCaseFilter(map[string]interface{}{
+			filter = map[string]interface{}{
 				"include_one":   true,
 				"include_two":   false,
 				"include_three": true,
-			})
+			}
 		})
 
 		It("only runs tests that are included in the config", func() {
@@ -45,10 +45,10 @@ var _ = Describe("TestCaseFilter", func() {
 
 		Context("when an include flag has a non-boolean value", func() {
 			BeforeEach(func() {
-				filter = runner.IntegrationConfigTestCaseFilter(map[string]interface{}{
+				filter = map[string]interface{}{
 					"include_one": true,
 					"include_two": "not a boolean",
-				})
+				}
 			})
 
 			It("returns an error", func() {
@@ -69,10 +69,10 @@ func (tc FakeTestCase) Name() string {
 	return tc.name
 }
 
-func (tc FakeTestCase) BeforeBackup(config runner.Config) {}
-func (tc FakeTestCase) AfterBackup(config runner.Config)  {}
-func (tc FakeTestCase) AfterRestore(config runner.Config) {}
-func (tc FakeTestCase) Cleanup(config runner.Config)      {}
+func (tc FakeTestCase) BeforeBackup(runner.Config) {}
+func (tc FakeTestCase) AfterBackup(runner.Config)  {}
+func (tc FakeTestCase) AfterRestore(runner.Config) {}
+func (tc FakeTestCase) Cleanup(runner.Config)      {}
 
 func testCase(name string) runner.TestCase {
 	return FakeTestCase{name: name}
