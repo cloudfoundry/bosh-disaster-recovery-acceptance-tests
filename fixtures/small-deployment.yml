@@ -10,7 +10,7 @@ releases:
 
 stemcells:
 - alias: default
-  os: ubuntu-jammy
+  os: ((stemcell_os))
   version: latest
 
 update:
@@ -29,4 +29,4 @@ instance_groups:
   stemcell: default
   vm_type: "((vm_type))"
   networks:
-    - {name: "((network_name))"}
+    - name: "((network_name))"
