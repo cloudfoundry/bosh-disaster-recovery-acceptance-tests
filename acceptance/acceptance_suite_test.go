@@ -1,17 +1,15 @@
 package acceptance_test
 
 import (
-	"os"
-
-	. "github.com/onsi/ginkgo/v2"
-	. "github.com/onsi/gomega"
-
+	"encoding/json"
 	"fmt"
+	"os"
 	"testing"
 
-	"encoding/json"
 	"github.com/cloudfoundry-incubator/bosh-disaster-recovery-acceptance-tests/acceptance"
 	"github.com/cloudfoundry-incubator/bosh-disaster-recovery-acceptance-tests/runner"
+	. "github.com/onsi/ginkgo/v2"
+	. "github.com/onsi/gomega"
 )
 
 func TestAcceptance(t *testing.T) {
@@ -43,7 +41,7 @@ func loadConfig() (runner.Config, runner.TestCaseFilter) {
 
 	filter, err := runner.NewIntegrationConfigTestCaseFilter(rawConfig)
 	if err != nil {
-		panic(fmt.Sprint("Could not unmarshal Filter"))
+		panic("Could not unmarshal Filter")
 	}
 
 	return config, filter

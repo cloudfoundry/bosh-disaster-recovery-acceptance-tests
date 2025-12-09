@@ -25,7 +25,7 @@ func (f IntegrationConfigTestCaseFilter) Filter(testCases []TestCase) ([]TestCas
 			return nil, err
 		}
 
-		if flagValue == true {
+		if flagValue {
 			filteredTestCases = append(filteredTestCases, testCase)
 		}
 	}

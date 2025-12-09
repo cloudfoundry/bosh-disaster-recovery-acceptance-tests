@@ -4,8 +4,8 @@ import (
 	"code.cloudfoundry.org/credhub-cli/credhub"
 	"code.cloudfoundry.org/credhub-cli/credhub/auth"
 	"code.cloudfoundry.org/credhub-cli/credhub/credentials/values"
-	. "github.com/cloudfoundry-incubator/bosh-disaster-recovery-acceptance-tests/runner"
-	. "github.com/onsi/gomega"
+	. "github.com/cloudfoundry-incubator/bosh-disaster-recovery-acceptance-tests/runner" //nolint:staticcheck
+	. "github.com/onsi/gomega"                                                           //nolint:staticcheck
 )
 
 const CredentialName = "some-password"
