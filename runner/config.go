@@ -12,6 +12,7 @@ type Config struct {
 	BBRBinaryPath string
 	ArtifactPath  string
 	StemcellSrc   string
+	StemcellOs    string
 	Timeout       time.Duration
 	Jumpbox       *jumpbox
 }

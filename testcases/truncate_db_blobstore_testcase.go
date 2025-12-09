@@ -36,6 +36,7 @@ func (t TruncateDBBlobstoreTestcase) BeforeBackup(config Config) {
 			fmt.Sprintf("--var=vm_type=%s", config.BOSH.CloudConfig.DefaultVMType),
 			fmt.Sprintf("--var=network_name=%s", config.BOSH.CloudConfig.DefaultNetwork),
 			fmt.Sprintf("--var=az_name=%s", config.BOSH.CloudConfig.DefaultAZ),
+			fmt.Sprintf("--var=stemcell_os='%s'", config.StemcellOs),
 			fixtures.Path("small-deployment.yml"),
 		)
 	})
