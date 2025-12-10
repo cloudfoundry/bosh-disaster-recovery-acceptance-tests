@@ -47,19 +47,17 @@ func RunCommandSuccessfullyWithFailureMessage(description string, cmd string, ar
 }
 
 func runCommandWithStreamInDirectorVM(description string, config Config, cmd string, args ...string) *gexec.Session {
-	cmdToRunArgs := strings.Join(args, " ")
-	cmdToRun := fmt.Sprintf("%s %s", cmd, cmdToRunArgs)
+	cmdWithArgs := append([]string{cmd}, args...)
 
-	command := exec.Command(
+	session, err := execCommand(
 		"ssh",
 		config.BOSH.Host,
 		"-o", "UserKnownHostsFile=/dev/null",
 		"-o", "StrictHostKeyChecking=no",
 		"-l", config.BOSH.SSHUsername,
 		"-i", config.BOSH.SSHPrivateKeyPath,
-		cmdToRun,
+		strings.Join(cmdWithArgs, " "),
 	)
-	session, err := gexec.Start(command, GinkgoWriter, GinkgoWriter)
 
 	Expect(err).ToNot(HaveOccurred())
 	Eventually(session).Should(gexec.Exit(), fmt.Sprintf("Command timed out: %s", description))
@@ -67,16 +65,24 @@ func runCommandWithStreamInDirectorVM(description string, config Config, cmd str
 }
 
 func RunCommandWithStream(description string, cmd string, args ...string) *gexec.Session {
-	cmdToRunArgs := strings.Join(args, " ")
-	cmdToRun := fmt.Sprintf("%s %s", cmd, cmdToRunArgs)
+	cmdWithArgs := append([]string{cmd}, args...)
 
-	command := exec.Command("bash", "-c", cmdToRun)
-	session, err := gexec.Start(command, GinkgoWriter, GinkgoWriter)
+	session, err := execCommand("bash", "-c", strings.Join(cmdWithArgs, " "))
 
 	Expect(err).ToNot(HaveOccurred())
 	Eventually(session).Should(gexec.Exit(), fmt.Sprintf("Command timed out: %s", description))
 	return session
 }
+
+func execCommand(cmd string, args ...string) (*gexec.Session, error) {
+	session, err := gexec.Start(exec.Command(cmd, args...), GinkgoWriter, GinkgoWriter)
+	if err != nil {
+		return nil, err
+	}
+
+	return session, nil
+}
+
 func getBoshAllProxy(config Config) string {
 	// ssh+socks5://ubuntu@34.72.88.156:22?private-key=/tmp/tmp.bBURxmHm5j
 	if config.Jumpbox != nil && config.Jumpbox.host != "" {
