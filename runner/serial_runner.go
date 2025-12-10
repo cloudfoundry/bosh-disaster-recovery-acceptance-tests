@@ -2,17 +2,17 @@ package runner
 
 import (
 	"fmt"
-	"github.com/cloudfoundry-incubator/bosh-disaster-recovery-acceptance-tests/fixtures"
-	. "github.com/onsi/ginkgo/v2"
-	. "github.com/onsi/gomega"
 	"os"
 	"path"
 	"path/filepath"
 	"strings"
+
+	"github.com/cloudfoundry-incubator/bosh-disaster-recovery-acceptance-tests/fixtures"
+	. "github.com/onsi/ginkgo/v2" //nolint:staticcheck
+	. "github.com/onsi/gomega"    //nolint:staticcheck
 )
 
 func RunBoshDisasterRecoveryAcceptanceTestsSerially(config Config, testCases []TestCase) {
-	fmt.Println("Running testcases: ")
 	for _, t := range testCases {
 		fmt.Println(t.Name())
 	}
@@ -53,10 +53,6 @@ func RunBoshDisasterRecoveryAcceptanceTestsSerially(config Config, testCases []T
 				By("Running cleanup for each testcase", func() {
 					fmt.Println("Running the cleanup step for " + testCase.Name())
 					testCase.Cleanup(config)
-				})
-
-				By("Cleanup bbr director backup artifact", func() {
-					os.RemoveAll(artifactPath)
 				})
 			})
 
@@ -99,8 +95,7 @@ func RunBoshDisasterRecoveryAcceptanceTestsSerially(config Config, testCases []T
 						"bbr director restore",
 						config,
 						fmt.Sprintf(
-							"director --host %s --username %s --private-key-path %s "+
-								"restore --artifact-path %s",
+							"director --host %s --username %s --private-key-path %s restore --artifact-path %s",
 							config.BOSH.Host,
 							config.BOSH.SSHUsername,
 							boshPrivateKeyPath,

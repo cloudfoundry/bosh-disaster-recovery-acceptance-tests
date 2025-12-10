@@ -6,8 +6,8 @@ import (
 	"time"
 
 	"github.com/cloudfoundry-incubator/bosh-disaster-recovery-acceptance-tests/fixtures"
-	. "github.com/cloudfoundry-incubator/bosh-disaster-recovery-acceptance-tests/runner"
-	. "github.com/onsi/gomega"
+	. "github.com/cloudfoundry-incubator/bosh-disaster-recovery-acceptance-tests/runner" //nolint:staticcheck
+	. "github.com/onsi/gomega"                                                           //nolint:staticcheck
 )
 
 func monitWait(config Config, jobName, status string) {
