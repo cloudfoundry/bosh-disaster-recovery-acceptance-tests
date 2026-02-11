@@ -107,6 +107,7 @@ func NewConfig(integrationConfig acceptance.IntegrationConfig, bbrBinaryPath, ar
 			Server:       integrationConfig.CredhubServer,
 		},
 		StemcellSrc:   integrationConfig.StemcellSrc,
+		StemcellOs:    integrationConfig.StemcellOs,
 		BBRBinaryPath: bbrBinaryPath,
 		ArtifactPath:  artifactDirPath,
 		Timeout:       timeout,
