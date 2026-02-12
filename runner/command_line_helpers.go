@@ -9,8 +9,8 @@ import (
 
 	"fmt"
 
-	. "github.com/onsi/ginkgo/v2"
-	. "github.com/onsi/gomega"
+	. "github.com/onsi/ginkgo/v2" //nolint:staticcheck
+	. "github.com/onsi/gomega"    //nolint:staticcheck
 	"github.com/onsi/gomega/gexec"
 )
 
@@ -28,7 +28,7 @@ func RunCommandInDirectorVM(description string, config Config, cmd string, args 
 
 func RunCommandInDirectorVMSuccessfullyWithFailureMessage(description string, config Config, cmd string, args ...string) *gexec.Session {
 	session := runCommandWithStreamInDirectorVM(description, GinkgoWriter, config, cmd, args...)
-	Expect(session).To(gexec.Exit(0), "Command errored: "+description)
+	Expect(session).To(gexec.Exit(0), fmt.Sprintf("Command errored: %s", description))
 	return session
 }
 
@@ -39,12 +39,12 @@ func RunBBRCommand(description string, config Config, args ...string) *gexec.Ses
 
 func RunBBRCommandSuccessfullyWithFailureMessage(description string, config Config, args ...string) {
 	session := RunBBRCommand(description, config, args...)
-	Expect(session).To(gexec.Exit(0), "Command errored: "+description)
+	Expect(session).To(gexec.Exit(0), fmt.Sprintf("Command errored: %s", description))
 }
 
 func RunCommandSuccessfullyWithFailureMessage(description string, writer io.Writer, cmd string, args ...string) *gexec.Session {
 	session := RunCommandWithStream(description, writer, cmd, args...)
-	Expect(session).To(gexec.Exit(0), "Command errored: "+description)
+	Expect(session).To(gexec.Exit(0), fmt.Sprintf("Command errored: %s", description))
 	return session
 }
 
@@ -64,8 +64,7 @@ func runCommandWithStreamInDirectorVM(description string, writer io.Writer, conf
 	session, err := gexec.Start(command, writer, writer)
 
 	Expect(err).ToNot(HaveOccurred())
-	Eventually(session).Should(gexec.Exit(), "Command timed out: "+description)
-	fmt.Fprintln(writer, "")
+	Eventually(session).Should(gexec.Exit(), fmt.Sprintf("Command timed out: %s", description))
 	return session
 }
 
@@ -77,8 +76,7 @@ func RunCommandWithStream(description string, writer io.Writer, cmd string, args
 	session, err := gexec.Start(command, writer, writer)
 
 	Expect(err).ToNot(HaveOccurred())
-	Eventually(session).Should(gexec.Exit(), "Command timed out: "+description)
-	fmt.Fprintln(writer, "")
+	Eventually(session).Should(gexec.Exit(), fmt.Sprintf("Command timed out: %s", description))
 	return session
 }
 func getBoshAllProxy(config Config) string {
@@ -109,11 +107,11 @@ func getBoshBaseCommand(config Config) string {
 }
 
 func jumpboxKeyFile(privateKey string) (string, error) {
-	d, err := os.MkdirTemp("", "drats")
+	dir, err := os.MkdirTemp("", "drats")
 	if err != nil {
 		return "", err
 	}
-	fname := filepath.Join(d, "key")
-	err = os.WriteFile(fname, []byte(privateKey), 0400)
-	return fname, err
+	fileName := filepath.Join(dir, "key")
+	err = os.WriteFile(fileName, []byte(privateKey), 0400)
+	return fileName, err
 }

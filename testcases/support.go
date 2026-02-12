@@ -6,13 +6,13 @@ import (
 	"time"
 
 	"github.com/cloudfoundry-incubator/bosh-disaster-recovery-acceptance-tests/fixtures"
-	. "github.com/cloudfoundry-incubator/bosh-disaster-recovery-acceptance-tests/runner"
-	. "github.com/onsi/gomega"
+	"github.com/cloudfoundry-incubator/bosh-disaster-recovery-acceptance-tests/runner"
+	. "github.com/onsi/gomega" //nolint:staticcheck
 )
 
-func monitWait(config Config, jobName, status string) {
+func monitWait(config runner.Config, jobName, status string) {
 	Eventually(func() string {
-		statusLines := strings.Split(string(RunCommandInDirectorVM(
+		statusLines := strings.Split(string(runner.RunCommandInDirectorVM(
 			"monit summary",
 			config,
 			"sudo /var/vcap/bosh/bin/monit summary",
@@ -27,8 +27,8 @@ func monitWait(config Config, jobName, status string) {
 	}, fixtures.EventuallyTimeout, fixtures.EventuallyRetryInterval).Should(HaveSuffix(status))
 }
 
-func monitStop(config Config, jobName string) {
-	RunCommandInDirectorVMSuccessfullyWithFailureMessage(
+func monitStop(config runner.Config, jobName string) {
+	runner.RunCommandInDirectorVMSuccessfullyWithFailureMessage(
 		fmt.Sprintf("monit stop %s", jobName),
 		config,
 		fmt.Sprintf("sudo /var/vcap/bosh/bin/monit stop %s", jobName),
@@ -37,8 +37,8 @@ func monitStop(config Config, jobName string) {
 	monitWait(config, jobName, "not monitored")
 }
 
-func monitStart(config Config, jobName string) {
-	RunCommandInDirectorVMSuccessfullyWithFailureMessage(
+func monitStart(config runner.Config, jobName string) {
+	runner.RunCommandInDirectorVMSuccessfullyWithFailureMessage(
 		fmt.Sprintf("monit start %s", jobName),
 		config,
 		fmt.Sprintf("sudo /var/vcap/bosh/bin/monit start %s", jobName),

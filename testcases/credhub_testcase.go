@@ -4,8 +4,8 @@ import (
 	"code.cloudfoundry.org/credhub-cli/credhub"
 	"code.cloudfoundry.org/credhub-cli/credhub/auth"
 	"code.cloudfoundry.org/credhub-cli/credhub/credentials/values"
-	. "github.com/cloudfoundry-incubator/bosh-disaster-recovery-acceptance-tests/runner"
-	. "github.com/onsi/gomega"
+	"github.com/cloudfoundry-incubator/bosh-disaster-recovery-acceptance-tests/runner"
+	. "github.com/onsi/gomega" //nolint:staticcheck
 )
 
 const CredentialName = "some-password"
@@ -17,7 +17,7 @@ func (t CredhubTestcase) Name() string {
 	return "credhub_testcase"
 }
 
-func (t CredhubTestcase) BeforeBackup(config Config) {
+func (t CredhubTestcase) BeforeBackup(config runner.Config) {
 	var credhubClient *credhub.CredHub
 	err := attemptWithBackoff(func() error {
 		var err error
@@ -30,7 +30,7 @@ func (t CredhubTestcase) BeforeBackup(config Config) {
 	Expect(err).ToNot(HaveOccurred())
 }
 
-func (t CredhubTestcase) AfterBackup(config Config) {
+func (t CredhubTestcase) AfterBackup(config runner.Config) {
 	credhubClient, err := t.credhubClient(config)
 	Expect(err).ToNot(HaveOccurred())
 
@@ -38,7 +38,7 @@ func (t CredhubTestcase) AfterBackup(config Config) {
 	Expect(err).ToNot(HaveOccurred())
 }
 
-func (t CredhubTestcase) AfterRestore(config Config) {
+func (t CredhubTestcase) AfterRestore(config runner.Config) {
 	credhubClient, err := t.credhubClient(config)
 	Expect(err).ToNot(HaveOccurred())
 
@@ -48,7 +48,7 @@ func (t CredhubTestcase) AfterRestore(config Config) {
 	Expect(string(credential.Value)).To(Equal(CredentialValue))
 }
 
-func (t CredhubTestcase) Cleanup(config Config) {
+func (t CredhubTestcase) Cleanup(config runner.Config) {
 	credhubClient, err := t.credhubClient(config)
 	Expect(err).ToNot(HaveOccurred())
 
@@ -56,7 +56,7 @@ func (t CredhubTestcase) Cleanup(config Config) {
 	Expect(err).ToNot(HaveOccurred())
 }
 
-func (t CredhubTestcase) credhubClient(config Config) (*credhub.CredHub, error) {
+func (t CredhubTestcase) credhubClient(config runner.Config) (*credhub.CredHub, error) {
 	return credhub.New(
 		config.Credhub.Server,
 		credhub.CaCerts(config.Credhub.CA),

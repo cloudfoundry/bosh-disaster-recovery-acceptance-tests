@@ -6,9 +6,9 @@ import (
 	"time"
 
 	"github.com/cloudfoundry-incubator/bosh-disaster-recovery-acceptance-tests/fixtures"
-	. "github.com/cloudfoundry-incubator/bosh-disaster-recovery-acceptance-tests/runner"
-	. "github.com/onsi/ginkgo/v2"
-	. "github.com/onsi/gomega"
+	"github.com/cloudfoundry-incubator/bosh-disaster-recovery-acceptance-tests/runner"
+	. "github.com/onsi/ginkgo/v2" //nolint:staticcheck
+	. "github.com/onsi/gomega"    //nolint:staticcheck
 )
 
 type DeploymentTestcase struct{}
@@ -17,9 +17,9 @@ func (t DeploymentTestcase) Name() string {
 	return "deployment_testcase"
 }
 
-func (t DeploymentTestcase) BeforeBackup(config Config) {
+func (t DeploymentTestcase) BeforeBackup(config runner.Config) {
 	By("uploading stemcell", func() {
-		RunBoshCommandSuccessfullyWithFailureMessage(
+		runner.RunBoshCommandSuccessfullyWithFailureMessage(
 			"bosh upload stemcell",
 			config,
 			"upload-stemcell",
@@ -28,7 +28,7 @@ func (t DeploymentTestcase) BeforeBackup(config Config) {
 	})
 
 	By("deploying sdk deployment ", func() {
-		RunBoshCommandSuccessfullyWithFailureMessage(
+		runner.RunBoshCommandSuccessfullyWithFailureMessage(
 			"bosh deploy sdk",
 			config,
 			"-n",
@@ -44,9 +44,9 @@ func (t DeploymentTestcase) BeforeBackup(config Config) {
 	})
 }
 
-func (t DeploymentTestcase) AfterBackup(config Config) {
+func (t DeploymentTestcase) AfterBackup(config runner.Config) {
 	By("deleting sdk deployment ", func() {
-		RunBoshCommandSuccessfullyWithFailureMessage("bosh delete sdk deployment",
+		runner.RunBoshCommandSuccessfullyWithFailureMessage("bosh delete sdk deployment",
 			config,
 			"-n",
 			"-d",
@@ -56,7 +56,7 @@ func (t DeploymentTestcase) AfterBackup(config Config) {
 	})
 
 	By("cleaning up", func() {
-		RunBoshCommandSuccessfullyWithFailureMessage("bosh delete sdk deployment",
+		runner.RunBoshCommandSuccessfullyWithFailureMessage("bosh delete sdk deployment",
 			config,
 			"-n",
 			"clean-up",
@@ -65,9 +65,9 @@ func (t DeploymentTestcase) AfterBackup(config Config) {
 	})
 }
 
-func (t DeploymentTestcase) AfterRestore(config Config) {
+func (t DeploymentTestcase) AfterRestore(config runner.Config) {
 	By("re-uploading stemcell", func() {
-		RunBoshCommandSuccessfullyWithFailureMessage(
+		runner.RunBoshCommandSuccessfullyWithFailureMessage(
 			"bosh upload stemcell",
 			config,
 			"upload-stemcell",
@@ -77,7 +77,7 @@ func (t DeploymentTestcase) AfterRestore(config Config) {
 	})
 
 	By("doing cck to bring back instances", func() {
-		RunBoshCommandSuccessfullyWithFailureMessage("bosh cck sdk deployment",
+		runner.RunBoshCommandSuccessfullyWithFailureMessage("bosh cck sdk deployment",
 			config,
 			"-n",
 			"-d",
@@ -104,8 +104,8 @@ func isRunning(state string) bool {
 	return strings.Contains(state, "running")
 }
 
-func getInstances(deployment string, config Config) string {
-	session := RunBoshCommandSuccessfullyWithFailureMessage("bosh get sdk instances",
+func getInstances(deployment string, config runner.Config) string {
+	session := runner.RunBoshCommandSuccessfullyWithFailureMessage("bosh get sdk instances",
 		config,
 		"-n",
 		"-d",
@@ -115,9 +115,9 @@ func getInstances(deployment string, config Config) string {
 	return string(session.Out.Contents())
 }
 
-func (t DeploymentTestcase) Cleanup(config Config) {
+func (t DeploymentTestcase) Cleanup(config runner.Config) {
 	By("deleting sdk deployment ", func() {
-		RunBoshCommandSuccessfullyWithFailureMessage("bosh delete sdk deployment",
+		runner.RunBoshCommandSuccessfullyWithFailureMessage("bosh delete sdk deployment",
 			config,
 			"-n",
 			"-d",
