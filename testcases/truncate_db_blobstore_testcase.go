@@ -4,9 +4,9 @@ import (
 	"fmt"
 
 	"github.com/cloudfoundry-incubator/bosh-disaster-recovery-acceptance-tests/fixtures"
-	. "github.com/cloudfoundry-incubator/bosh-disaster-recovery-acceptance-tests/runner"
-	. "github.com/onsi/ginkgo/v2"
-	. "github.com/onsi/gomega"
+	"github.com/cloudfoundry-incubator/bosh-disaster-recovery-acceptance-tests/runner"
+	. "github.com/onsi/ginkgo/v2" //nolint:staticcheck
+	. "github.com/onsi/gomega"    //nolint:staticcheck
 )
 
 type TruncateDBBlobstoreTestcase struct{}
@@ -15,9 +15,9 @@ func (t TruncateDBBlobstoreTestcase) Name() string {
 	return "truncate_db_blobstore_testcase"
 }
 
-func (t TruncateDBBlobstoreTestcase) BeforeBackup(config Config) {
+func (t TruncateDBBlobstoreTestcase) BeforeBackup(config runner.Config) {
 	By("uploading stemcell", func() {
-		RunBoshCommandSuccessfullyWithFailureMessage(
+		runner.RunBoshCommandSuccessfullyWithFailureMessage(
 			"bosh upload stemcell",
 			config,
 			"upload-stemcell",
@@ -26,7 +26,7 @@ func (t TruncateDBBlobstoreTestcase) BeforeBackup(config Config) {
 	})
 
 	By("deploying sdk deployment ", func() {
-		RunBoshCommandSuccessfullyWithFailureMessage(
+		runner.RunBoshCommandSuccessfullyWithFailureMessage(
 			"bosh deploy sdk",
 			config,
 			"-n",
@@ -42,7 +42,7 @@ func (t TruncateDBBlobstoreTestcase) BeforeBackup(config Config) {
 	})
 }
 
-func (t TruncateDBBlobstoreTestcase) AfterBackup(config Config) {
+func (t TruncateDBBlobstoreTestcase) AfterBackup(config runner.Config) {
 
 	monitStop(config, "director")
 	monitStop(config, "uaa")
@@ -50,13 +50,13 @@ func (t TruncateDBBlobstoreTestcase) AfterBackup(config Config) {
 	monitStop(config, "blobstore_nginx")
 	monitStop(config, "postgres")
 
-	RunCommandInDirectorVMSuccessfullyWithFailureMessage(
+	runner.RunCommandInDirectorVMSuccessfullyWithFailureMessage(
 		"truncate db/blobstore",
 		config,
 		"sudo rm -rf /var/vcap/store/{blobstore,director,postgres*}",
 	)
 
-	RunCommandInDirectorVMSuccessfullyWithFailureMessage(
+	runner.RunCommandInDirectorVMSuccessfullyWithFailureMessage(
 		"pre-start all jobs",
 		config,
 		"sudo bash -c",
@@ -64,7 +64,7 @@ func (t TruncateDBBlobstoreTestcase) AfterBackup(config Config) {
 	)
 
 	fmt.Println("Waiting for  all jobs to finish pre-start")
-	RunCommandInDirectorVMSuccessfullyWithFailureMessage(
+	runner.RunCommandInDirectorVMSuccessfullyWithFailureMessage(
 		"pre-start all jobs",
 		config,
 		"sudo bash -c",
@@ -78,7 +78,7 @@ func (t TruncateDBBlobstoreTestcase) AfterBackup(config Config) {
 	monitStart(config, "director")
 
 	Eventually(func() int {
-		session := RunBoshCommand(
+		session := runner.RunBoshCommand(
 			"bosh env",
 			config,
 			"env",
@@ -87,9 +87,9 @@ func (t TruncateDBBlobstoreTestcase) AfterBackup(config Config) {
 	}).Should(Equal(0))
 }
 
-func (t TruncateDBBlobstoreTestcase) AfterRestore(config Config) {
+func (t TruncateDBBlobstoreTestcase) AfterRestore(config runner.Config) {
 	By("doing cck to bring back instances", func() {
-		RunBoshCommandSuccessfullyWithFailureMessage("bosh cck sdk deployment",
+		runner.RunBoshCommandSuccessfullyWithFailureMessage("bosh cck sdk deployment",
 			config,
 			"-n",
 			"-d",
@@ -101,7 +101,7 @@ func (t TruncateDBBlobstoreTestcase) AfterRestore(config Config) {
 
 	By("validate deployment instances are back", func() {
 		Eventually(func() string {
-			session := RunBoshCommandSuccessfullyWithFailureMessage("bosh get sdk instances",
+			session := runner.RunBoshCommandSuccessfullyWithFailureMessage("bosh get sdk instances",
 				config,
 				"-n",
 				"-d",
@@ -113,9 +113,9 @@ func (t TruncateDBBlobstoreTestcase) AfterRestore(config Config) {
 	})
 }
 
-func (t TruncateDBBlobstoreTestcase) Cleanup(config Config) {
+func (t TruncateDBBlobstoreTestcase) Cleanup(config runner.Config) {
 	By("deleting sdk deployment ", func() {
-		RunBoshCommandSuccessfullyWithFailureMessage("bosh delete sdk deployment",
+		runner.RunBoshCommandSuccessfullyWithFailureMessage("bosh delete sdk deployment",
 			config,
 			"-n",
 			"-d",

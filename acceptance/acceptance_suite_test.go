@@ -10,6 +10,7 @@ import (
 	"testing"
 
 	"encoding/json"
+
 	"github.com/cloudfoundry-incubator/bosh-disaster-recovery-acceptance-tests/acceptance"
 	"github.com/cloudfoundry-incubator/bosh-disaster-recovery-acceptance-tests/runner"
 )
@@ -43,7 +44,7 @@ func loadConfig() (runner.Config, runner.TestCaseFilter) {
 
 	filter, err := runner.NewIntegrationConfigTestCaseFilter(rawConfig)
 	if err != nil {
-		panic(fmt.Sprint("Could not unmarshal Filter"))
+		panic(fmt.Sprintf("Could not unmarshal Filter: %s", err))
 	}
 
 	return config, filter
