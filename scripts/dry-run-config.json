@@ -1,0 +1,5 @@
+{
+  "include_credhub_testcase": true,
+  "include_deployment_testcase": true,
+  "include_truncate_db_blobstore_testcase": true
+}
