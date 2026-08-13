@@ -5,4 +5,4 @@ inputs:
   - name: bosh-disaster-recovery-acceptance-tests
 
 run:
-  path: bosh-disaster-recovery-acceptance-tests/ci/validate.sh
+  path: bosh-disaster-recovery-acceptance-tests/ci/tasks/validate.sh
