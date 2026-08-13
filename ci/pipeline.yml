@@ -3,7 +3,6 @@ resources:
   - name: bosh-disaster-recovery-acceptance-tests
     type: git
     source:
-      branch: master
       uri: git@github.com:cloudfoundry/bosh-disaster-recovery-acceptance-tests.git
       private_key: ((github_deploy_key_bosh-disaster-recovery-acceptance-tests.private_key))
 
