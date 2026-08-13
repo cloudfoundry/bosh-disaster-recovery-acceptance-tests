@@ -11,6 +11,9 @@ ROOT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )/.." && pwd )"
   fi
 )
 
+PATH="$(go env GOPATH)/bin":${PATH}
+export PATH
+
 GOOS="linux"
 
 echo "> GOOS=${GOOS} golangci-lint... (v$(golangci-lint version --short))"
