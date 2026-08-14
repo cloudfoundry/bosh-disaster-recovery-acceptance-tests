@@ -4,6 +4,7 @@ resources:
     type: git
     source:
       uri: git@github.com:cloudfoundry/bosh-disaster-recovery-acceptance-tests.git
+      branch: main
       private_key: ((github_deploy_key_bosh-disaster-recovery-acceptance-tests.private_key))
 
   - name: golang-release
