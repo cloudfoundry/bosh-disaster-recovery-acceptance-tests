@@ -2,11 +2,18 @@
 name: small-deployment
 
 releases:
-- name: "zookeeper"
-  version: "0.0.10"
-  url: "https://bosh.io/d/github.com/cppforlife/zookeeper-release?v=0.0.10"
-  sha1: "a6d227abceebf1e3e68ce4a3cabf68b0b93165d2"
-
+- name: nats
+  version: 57.16.0
+  url: https://bosh.io/d/github.com/cloudfoundry/nats-release?v=57.16.0
+  sha1: 4bcea83c094aeb555471689ec4372520634a34f1
+- name: bpm
+  version: 1.4.36
+  url: https://bosh.io/d/github.com/cloudfoundry/bpm-release?v=1.4.36
+  sha1: 455fcdb91a9e0c559acbc09354a959bf226a0e34
+- name: bosh-dns-aliases
+  version: 0.0.4
+  url: https://bosh.io/d/github.com/cloudfoundry/bosh-dns-aliases-release?v=0.0.4
+  sha1: 55b3dced813ff9ed92a05cda02156e4b5604b273
 
 stemcells:
 - alias: default
@@ -19,14 +26,116 @@ update:
   canary_watch_time: 1000-30000
   update_watch_time: 1000-30000
 
+addons:
+- name: bpm
+  jobs:
+  - name: bpm
+    release: bpm
+
+# Only takes effect on directors running bosh-dns; nats-tls does not need the
+# alias to come up, since its healthcheck dials spec.address directly.
+- name: bosh-dns-aliases
+  jobs:
+  - name: bosh-dns-aliases
+    release: bosh-dns-aliases
+    properties:
+      aliases:
+      - domain: nats.service.internal
+        targets:
+        - query: '*'
+          instance_group: small-job
+          deployment: small-deployment
+          network: "((network_name))"
+          domain: bosh
+      - domain: _.nats.service.internal
+        targets:
+        - query: '_'
+          instance_group: small-job
+          deployment: small-deployment
+          network: "((network_name))"
+          domain: bosh
+
 instance_groups:
 - name: small-job
   azs: ["((az_name))"]
   instances: 1
   jobs:
-    - name: zookeeper
-      release: zookeeper
+  - name: nats-tls
+    release: nats
+    properties:
+      nats:
+        hostname: nats.service.internal
+        user: nats
+        password: "((nats_password))"
+        fail_deployment_if_v1: true
+        internal:
+          tls:
+            enabled: true
+            ca: "((nats_internal_cert.ca))"
+            certificate: "((nats_internal_cert.certificate))"
+            private_key: "((nats_internal_cert.private_key))"
+        external:
+          tls:
+            ca: "((nats_server_cert.ca))"
+            certificate: "((nats_server_cert.certificate))"
+            private_key: "((nats_server_cert.private_key))"
+        client:
+          tls:
+            ca: "((nats_client_cert.ca))"
+            certificate: "((nats_client_cert.certificate))"
+            private_key: "((nats_client_cert.private_key))"
   stemcell: default
   vm_type: "((vm_type))"
   networks:
-    - name: "((network_name))"
+  - name: "((network_name))"
+
+variables:
+- name: nats_password
+  type: password
+
+- name: nats_internal_ca
+  type: certificate
+  options:
+    is_ca: true
+    common_name: nats_internal
+
+- name: nats_internal_cert
+  type: certificate
+  options:
+    ca: nats_internal_ca
+    common_name: "*.nats.service.internal"
+    alternative_names:
+    - "*.nats.service.internal"
+    - nats.service.internal
+    extended_key_usage:
+    - client_auth
+    - server_auth
+
+- name: nats_ca
+  type: certificate
+  options:
+    is_ca: true
+    common_name: nats
+
+- name: nats_server_cert
+  type: certificate
+  update_mode: converge
+  options:
+    ca: nats_ca
+    common_name: nats.service.internal
+    alternative_names:
+    - "*.nats.service.internal"
+    - nats.service.internal
+    extended_key_usage:
+    - server_auth
+
+- name: nats_client_cert
+  type: certificate
+  update_mode: converge
+  options:
+    ca: nats_ca
+    common_name: nats_client
+    alternative_names:
+    - nats_client
+    extended_key_usage:
+    - client_auth
