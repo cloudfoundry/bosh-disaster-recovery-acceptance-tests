@@ -105,6 +105,15 @@ func (s *Server) ListenAndServe(network, addr string) error {
 	return s.Serve(l)
 }
 
+// Listen only starts listening, useful if you want to block and wait for listening before serving
+func (s *Server) Listen(network, addr string) (net.Listener, error) {
+	l, err := net.Listen(network, addr)
+	if err != nil {
+		return nil, err
+	}
+	return l, nil
+}
+
 // Serve is used to serve connections from a listener
 func (s *Server) Serve(l net.Listener) error {
 	for {
@@ -112,14 +121,14 @@ func (s *Server) Serve(l net.Listener) error {
 		if err != nil {
 			return err
 		}
-		go s.ServeConn(conn)
+		go s.ServeConn(conn) //nolint:errcheck
 	}
-	return nil
+	return nil //nolint:govet
 }
 
 // ServeConn is used to serve a single connection.
 func (s *Server) ServeConn(conn net.Conn) error {
-	defer conn.Close()
+	defer conn.Close() //nolint:errcheck
 	bufConn := bufio.NewReader(conn)
 
 	// Read the version byte
@@ -131,7 +140,7 @@ func (s *Server) ServeConn(conn net.Conn) error {
 
 	// Ensure we are compatible
 	if version[0] != socks5Version {
-		err := fmt.Errorf("Unsupported SOCKS version: %v", version)
+		err := fmt.Errorf("Unsupported SOCKS version: %v", version) //nolint:staticcheck
 		s.config.Logger.Printf("[ERR] socks: %v", err)
 		return err
 	}
@@ -139,7 +148,7 @@ func (s *Server) ServeConn(conn net.Conn) error {
 	// Authenticate the connection
 	authContext, err := s.authenticate(conn, bufConn)
 	if err != nil {
-		err = fmt.Errorf("Failed to authenticate: %v", err)
+		err = fmt.Errorf("Failed to authenticate: %v", err) //nolint:staticcheck
 		s.config.Logger.Printf("[ERR] socks: %v", err)
 		return err
 	}
@@ -148,12 +157,12 @@ func (s *Server) ServeConn(conn net.Conn) error {
 	if err != nil {
 		if err == unrecognizedAddrType {
 			if err := sendReply(conn, addrTypeNotSupported, nil); err != nil {
-				err = fmt.Errorf("Failed to send reply: %v", err)
+				err = fmt.Errorf("Failed to send reply: %v", err) //nolint:staticcheck
 				s.config.Logger.Printf("[ERR] socks: %v", err)
 				return err
 			}
 		}
-		err = fmt.Errorf("Failed to read destination address: %v", err)
+		err = fmt.Errorf("Failed to read destination address: %v", err) //nolint:staticcheck
 		s.config.Logger.Printf("[ERR] socks: %v", err)
 		return err
 	}
