@@ -10,7 +10,7 @@ Please provide the following information:
 - [ ] Have you manually validated your `TestCase` against a deployed BOSH? If so, which version?
 - [ ] Does this change rely on a particular version of a release?
 - [ ] Are you available for a cross-team pair to help troubleshoot your PR?
-- [ ] Have you submitted a pull request to modify the bosh-deployment [backup and restore opsfile](https://github.com/cloudfoundry/bosh-deployment/blob/master/bbr.yml) to add a backup job and properties where appropriate?
+- [ ] Have you submitted a pull request to modify the bosh-deployment [backup and restore opsfile](https://github.com/cloudfoundry/bosh-deployment/blob/main/bbr.yml) to add a backup job and properties where appropriate?
 
 ### Do you have any other useful information for us?
 
